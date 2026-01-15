@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Voice Health Detection - AI-powered voice analysis for early disease risk screening">
+    <title>Voice Health Detection | AI-Powered Voice Analysis</title>
+
+    <!-- Stylesheets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <div class="navbar-brand">Voice Health Detection</div>
+            <ul id="navLinks" class="navbar-nav">
+                <!-- Will be populated by JavaScript -->
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="container" style="padding-top: 4rem; padding-bottom: 4rem;">
+        <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+            <h1
+                style="font-size: 3.5rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #818cf8, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                Voice Health Detection
+            </h1>
+            <p style="font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 2rem;">
+                AI-powered voice analysis for early disease risk screening. Analyze your voice patterns to detect
+                potential health concerns.
+            </p>
+
+            <div id="heroActions" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container" style="padding: 4rem 0;">
+        <h2 class="text-center mb-3">Why Choose Voice Health Detection?</h2>
+
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 3rem;">
+            <!-- Feature 1 -->
+            <div class="card text-center">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🎤</div>
+                <h3>Advanced AI Analysis</h3>
+                <p class="text-muted">State-of-the-art machine learning models analyze voice patterns for health
+                    indicators</p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="card text-center">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🔒</div>
+                <h3>Secure & Private</h3>
+                <p class="text-muted">Your data is encrypted and stored securely with industry-standard security
+                    protocols</p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="card text-center">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
+                <h3>Quick Results</h3>
+                <p class="text-muted">Get instant analysis results with detailed insights and recommendations</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div class="container" style="padding: 4rem 0;">
+        <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <h2 class="mb-2">About the Project</h2>
+            <p class="text-muted mb-2">
+                Voice Health Detection is an advanced system designed for early disease risk screening using human voice
+                analysis.
+                This platform leverages cutting-edge AI and machine learning techniques to analyze vocal patterns and
+                identify potential health concerns.
+            </p>
+            <p class="text-muted mb-2">
+                <strong>Important:</strong> This is a risk screening tool, not a diagnostic system. Results should be
+                discussed with healthcare professionals.
+            </p>
+            <p class="text-muted">
+                Built with FastAPI, MongoDB, and modern web technologies to provide a secure, scalable, and
+                user-friendly experience.
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer
+        style="text-align: center; padding: 2rem; margin-top: 4rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+        <p class="text-muted">
+            © 2026 Voice Health Detection | Person 1 - Authentication & User Management
+        </p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/api.js"></script>
+    <script>
+        // Update navigation based on auth status
+        function updateNavigation() {
+            const navLinks = document.getElementById('navLinks');
+            const heroActions = document.getElementById('heroActions');
+
+            if (isAuthenticated()) {
+                // Authenticated user navigation
+                const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                navLinks.innerHTML = `
+                    <li><a href="homepage.html" class="navbar-link">Home</a></li>
+                    <li><a href="profile.html" class="navbar-link">Profile</a></li>
+                    <li><span class="navbar-link">${user.full_name || 'User'}</span></li>
+                `;
+
+                heroActions.innerHTML = `
+                    <a href="profile.html" class="btn btn-primary">Go to Profile</a>
+                    <button onclick="handleLogout()" class="btn btn-secondary">Logout</button>
+                `;
+            } else {
+                // Guest user navigation
+                navLinks.innerHTML = `
+                    <li><a href="homepage.html" class="navbar-link">Home</a></li>
+                    <li><a href="login.html" class="btn btn-primary">Login</a></li>
+                `;
+
+                heroActions.innerHTML = `
+                    <a href="register.html" class="btn btn-primary">Get Started</a>
+                    <a href="login.html" class="btn btn-secondary">Sign In</a>
+                `;
+            }
+        }
+
+        async function handleLogout() {
+            try {
+                await API.auth.logout();
+            } catch (error) {
+                console.error('Logout error:', error);
+            } finally {
+                removeAuthToken();
+                window.location.reload();
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', updateNavigation);
+    </script>
+</body>
+
+</html>

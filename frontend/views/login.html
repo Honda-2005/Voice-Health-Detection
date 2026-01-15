@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Login to Voice Health Detection - AI-powered voice analysis for health screening">
+    <title>Login | Voice Health Detection</title>
+
+    <!-- Stylesheets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card card fade-in">
+            <div class="card-header">
+                <h1 class="card-title">Welcome Back</h1>
+                <p class="card-subtitle">Sign in to your account</p>
+            </div>
+
+            <form id="loginForm" autocomplete="on">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="john@example.com"
+                        required autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="••••••••"
+                        required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full mt-2">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="auth-link">
+                Don't have an account? <a href="register.html">Create one</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+</body>
+
+</html>
