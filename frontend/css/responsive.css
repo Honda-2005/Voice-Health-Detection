@@ -1,0 +1,131 @@
+/*
+ * Responsive Design Stylesheet
+ * Mobile-first responsive breakpoints
+ */
+
+/* ==================== Breakpoints ==================== */
+/* Mobile: < 640px (default) */
+/* Tablet: 640px - 1024px */
+/* Desktop: > 1024px */
+
+/* ==================== Tablet (640px+) ==================== */
+@media (min-width: 640px) {
+    .container {
+        padding: 0 var(--spacing-lg);
+    }
+
+    .auth-card {
+        max-width: 500px;
+    }
+
+    h1 {
+        font-size: 3rem;
+    }
+
+    h2 {
+        font-size: 2.25rem;
+    }
+
+    .navbar-content {
+        flex-direction: row;
+    }
+
+    .profile-avatar {
+        width: 140px;
+        height: 140px;
+        font-size: 3.5rem;
+    }
+}
+
+/* ==================== Desktop (1024px+) ==================== */
+@media (min-width: 1024px) {
+    html {
+        font-size: 18px;
+    }
+
+    .container {
+        padding: 0 var(--spacing-xl);
+    }
+
+    .card {
+        padding: var(--spacing-xl);
+    }
+
+    .profile-avatar {
+        width: 160px;
+        height: 160px;
+        font-size: 4rem;
+    }
+
+    .modal-content {
+        max-width: 600px;
+    }
+}
+
+/* ==================== Mobile Specific (< 640px) ==================== */
+@media (max-width: 639px) {
+    .modal-content {
+        width: 95%;
+        padding: var(--spacing-md);
+    }
+
+    .modal-footer {
+        flex-direction: column;
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+    }
+
+    .navbar-nav {
+        gap: var(--spacing-xs);
+    }
+
+    .navbar-link {
+        font-size: 0.9rem;
+        padding: var(--spacing-xs);
+    }
+
+    .profile-actions {
+        flex-direction: column;
+    }
+
+    .profile-actions .btn {
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.75rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+    }
+}
+
+/* ==================== Print Styles ==================== */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+
+    .navbar,
+    .modal-overlay,
+    .btn {
+        display: none;
+    }
+}
+
+/* ==================== Reduced Motion ==================== */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

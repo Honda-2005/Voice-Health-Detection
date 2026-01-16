@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="User Profile - Voice Health Detection">
+    <title>Profile | Voice Health Detection</title>
+
+    <!-- Stylesheets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <div class="navbar-brand">Voice Health Detection</div>
+            <ul class="navbar-nav">
+                <li><a href="homepage.html" class="navbar-link">Home</a></li>
+                <li><a href="profile.html" class="navbar-link">Profile</a></li>
+                <li><button id="logoutButton" class="btn btn-secondary">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Profile Container -->
+    <div class="profile-container container container-sm">
+        <div class="profile-header">
+            <div id="profileAvatar" class="profile-avatar">U</div>
+            <h1 id="profileName">Loading...</h1>
+            <p id="profileEmail" class="text-muted">Loading...</p>
+        </div>
+
+        <!-- View Mode -->
+        <div id="viewMode" class="card">
+            <h3 class="mb-2">Profile Information</h3>
+            <div id="profileInfo"></div>
+
+            <div class="profile-actions">
+                <button id="editButton" class="btn btn-primary">Edit Profile</button>
+                <button id="deleteButton" class="btn btn-danger">Delete Account</button>
+            </div>
+        </div>
+
+        <!-- Edit Mode -->
+        <div id="editMode" class="card hidden">
+            <h3 class="mb-2">Edit Profile</h3>
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <label for="edit_full_name" class="form-label">Full Name</label>
+                    <input type="text" id="edit_full_name" name="full_name" class="form-input" placeholder="John Doe"
+                        minlength="2" maxlength="100">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_phone" class="form-label">Phone Number</label>
+                    <input type="tel" id="edit_phone" name="phone" class="form-input" placeholder="+1234567890">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_age" class="form-label">Age</label>
+                    <input type="number" id="edit_age" name="age" class="form-input" placeholder="25" min="0" max="150">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_gender" class="form-label">Gender</label>
+                    <select id="edit_gender" name="gender" class="form-input">
+                        <option value="">Select gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="profile-actions">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" id="cancelEdit" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Delete Account</h2>
+                <p class="text-muted">This action cannot be undone</p>
+            </div>
+
+            <p>Are you sure you want to delete your account? All your data will be permanently removed.</p>
+
+            <div class="modal-footer">
+                <button id="cancelDelete" class="btn btn-secondary">Cancel</button>
+                <button id="confirmDelete" class="btn btn-danger">Delete Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/api.js"></script>
+    <script src="../js/profile.js"></script>
+</body>
+
+</html>
