@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Health | History</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="brand">
+                <i class="fas fa-heartbeat"></i>
+                <h2>Voice Health</h2>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-content">
+            <!-- User Profile Card -->
+            <div class="user-profile">
+                <div class="avatar">
+                    <img src="https://i.pravatar.cc/100?img=5" alt="User Avatar" id="userAvatar">
+                    <span class="status-indicator online"></span>
+                </div>
+                <div class="user-info">
+                    <h3 id="userName">Loading...</h3>
+                    <p id="userEmail">user@example.com</p>
+                    <div class="user-stats">
+                        <span><i class="fas fa-history"></i> <span id="totalHistory">0</span> records</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="homepage.html">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="record.html">
+                        <i class="fas fa-microphone"></i>
+                        <span>Record Voice</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="prediction_result.html">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Latest Results</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="history.html">
+                        <i class="fas fa-history"></i>
+                        <span>History</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="evaluation.html">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Evaluation</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="nav-divider"></li>
+                <li class="nav-item">
+                    <a href="help.html">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Help & Support</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- History Stats -->
+            <div class="sidebar-stats">
+                <h4>History Summary</h4>
+                <div class="history-summary">
+                    <div class="summary-item">
+                        <div class="summary-icon">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <div class="summary-info">
+                            <span class="summary-value" id="historyDays">0</span>
+                            <span class="summary-label">Days tracked</span>
+                        </div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-icon">
+                            <i class="fas fa-trend-up"></i>
+                        </div>
+                        <div class="summary-info">
+                            <span class="summary-value" id="avgScore">0</span>
+                            <span class="summary-label">Avg. score</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <span class="status-dot"></span>
+                <span>System Status: <strong>Online</strong></span>
+            </div>
+            <p class="version">v1.0.0</p>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Voice History</h1>
+                <p class="subtitle">Track your voice health journey over time</p>
+            </div>
+            
+            <div class="header-right">
+                <div class="history-actions">
+                    <button class="btn btn-outline" id="exportHistoryBtn">
+                        <i class="fas fa-download"></i> Export All
+                    </button>
+                    <button class="btn btn-primary" onclick="window.location.href='record.html'">
+                        <i class="fas fa-microphone"></i> New Recording
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- History Content -->
+        <div class="history-container">
+            <!-- Left Column: Filters & Stats -->
+            <div class="history-sidebar">
+                <!-- Quick Filters -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-filter"></i> Quick Filters</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="all">
+                                <i class="fas fa-list"></i> All Records
+                            </button>
+                            <button class="filter-btn" data-filter="normal">
+                                <i class="fas fa-check-circle"></i> Normal
+                            </button>
+                            <button class="filter-btn" data-filter="warning">
+                                <i class="fas fa-exclamation-triangle"></i> Warnings
+                            </button>
+                            <button class="filter-btn" data-filter="alert">
+                                <i class="fas fa-exclamation-circle"></i> Alerts
+                            </button>
+                        </div>
+                        
+                        <div class="date-range">
+                            <h4>Date Range</h4>
+                            <div class="range-inputs">
+                                <div class="input-group">
+                                    <label for="startDate">From</label>
+                                    <input type="date" id="startDate" class="date-input">
+                                </div>
+                                <div class="input-group">
+                                    <label for="endDate">To</label>
+                                    <input type="date" id="endDate" class="date-input">
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-block" id="applyDateFilter">
+                                <i class="fas fa-check"></i> Apply Range
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-pie"></i> Statistics</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <div class="stat-icon total">
+                                    <i class="fas fa-microphone"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="totalRecordingsStat">0</span>
+                                    <span class="stat-label">Total Recordings</span>
+                                </div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-icon normal">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="normalRecordings">0</span>
+                                    <span class="stat-label">Normal Results</span>
+                                </div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-icon warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="warningRecordings">0</span>
+                                    <span class="stat-label">Warnings</span>
+                                </div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-icon alert">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="alertRecordings">0</span>
+                                    <span class="stat-label">Alerts</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="consistency-meter">
+                            <h4>Recording Consistency</h4>
+                            <div class="meter-bar">
+                                <div class="meter-fill" id="consistencyFill"></div>
+                            </div>
+                            <div class="meter-labels">
+                                <span>0%</span>
+                                <span>50%</span>
+                                <span>100%</span>
+                            </div>
+                            <div class="meter-value" id="consistencyValue">0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trend Indicators -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-line"></i> Trend Indicators</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="trend-indicators">
+                            <div class="indicator positive">
+                                <div class="indicator-icon">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="indicator-content">
+                                    <h4>Improving</h4>
+                                    <p>Voice clarity increasing</p>
+                                </div>
+                            </div>
+                            <div class="indicator negative">
+                                <div class="indicator-icon">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                <div class="indicator-content">
+                                    <h4>Monitor</h4>
+                                    <p>Pitch stability decreased</p>
+                                </div>
+                            </div>
+                            <div class="indicator stable">
+                                <div class="indicator-icon">
+                                    <i class="fas fa-minus"></i>
+                                </div>
+                                <div class="indicator-content">
+                                    <h4>Stable</h4>
+                                    <p>Breath control consistent</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="action-buttons">
+                            <button class="action-btn" onclick="window.location.href='record.html'">
+                                <i class="fas fa-plus-circle"></i> Add Recording
+                            </button>
+                            <button class="action-btn" id="compareRecordingsBtn">
+                                <i class="fas fa-exchange-alt"></i> Compare
+                            </button>
+                            <button class="action-btn" id="deleteSelectedBtn">
+                                <i class="fas fa-trash-alt"></i> Delete Selected
+                            </button>
+                            <button class="action-btn" onclick="window.location.href='evaluation.html'">
+                                <i class="fas fa-chart-bar"></i> View Analytics
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Records List -->
+            <div class="history-main">
+                <!-- History Header -->
+                <div class="history-header">
+                    <div class="header-left">
+                        <h2>Voice Recordings</h2>
+                        <p class="subtitle" id="recordCount">0 records found</p>
+                    </div>
+                    <div class="header-right">
+                        <div class="view-options">
+                            <button class="view-btn active" data-view="list" title="List View">
+                                <i class="fas fa-list"></i>
+                            </button>
+                            <button class="view-btn" data-view="grid" title="Grid View">
+                                <i class="fas fa-th-large"></i>
+                            </button>
+                            <button class="view-btn" data-view="timeline" title="Timeline View">
+                                <i class="fas fa-stream"></i>
+                            </button>
+                        </div>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="Search recordings...">
+                        </div>
+                        <div class="sort-options">
+                            <select id="sortSelect">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="score-high">Highest Score</option>
+                                <option value="score-low">Lowest Score</option>
+                                <option value="duration">Recording Duration</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Records Container -->
+                <div class="records-container">
+                    <!-- List View -->
+                    <div class="records-view active" id="listView">
+                        <div class="records-table">
+                            <div class="table-header">
+                                <div class="table-cell select-cell">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" id="selectAll">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="table-cell date-cell">Date & Time</div>
+                                <div class="table-cell status-cell">Status</div>
+                                <div class="table-cell score-cell">Health Score</div>
+                                <div class="table-cell duration-cell">Duration</div>
+                                <div class="table-cell confidence-cell">Confidence</div>
+                                <div class="table-cell actions-cell">Actions</div>
+                            </div>
+                            
+                            <div class="table-body" id="recordsList">
+                                <!-- Records will be loaded here dynamically -->
+                                <div class="loading-placeholder">
+                                    <div class="spinner"></div>
+                                    <p>Loading your voice history...</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        <div class="pagination">
+                            <button class="pagination-btn" id="prevPage" disabled>
+                                <i class="fas fa-chevron-left"></i> Previous
+                            </button>
+                            <div class="page-numbers" id="pageNumbers">
+                                <span class="page-number active">1</span>
+                            </div>
+                            <button class="pagination-btn" id="nextPage">
+                                Next <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Grid View -->
+                    <div class="records-view" id="gridView">
+                        <div class="records-grid" id="recordsGrid">
+                            <!-- Grid cards will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Timeline View -->
+                    <div class="records-view" id="timelineView">
+                        <div class="timeline-container">
+                            <div class="timeline">
+                                <!-- Timeline items will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <div class="empty-icon">
+                        <i class="fas fa-microphone-slash"></i>
+                    </div>
+                    <h3>No Recordings Found</h3>
+                    <p>You haven't recorded your voice yet. Start your voice health journey today!</p>
+                    <button class="btn btn-primary" onclick="window.location.href='record.html'">
+                        <i class="fas fa-microphone"></i> Make Your First Recording
+                    </button>
+                </div>
+
+                <!-- Selected Actions -->
+                <div class="selected-actions" id="selectedActions" style="display: none;">
+                    <div class="selected-count">
+                        <i class="fas fa-check-circle"></i>
+                        <span id="selectedCount">0</span> recordings selected
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-sm btn-outline" id="compareSelectedBtn">
+                            <i class="fas fa-exchange-alt"></i> Compare Selected
+                        </button>
+                        <button class="btn btn-sm btn-danger" id="deleteSelectedConfirmBtn">
+                            <i class="fas fa-trash-alt"></i> Delete Selected
+                        </button>
+                        <button class="btn btn-sm btn-text" id="clearSelectionBtn">
+                            Clear Selection
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Modal -->
+        <div class="modal" id="comparisonModal">
+            <div class="modal-overlay"></div>
+            <div class="modal-dialog modal-large">
+                <div class="modal-header">
+                    <h3><i class="fas fa-exchange-alt"></i> Compare Recordings</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="comparison-container">
+                        <!-- Comparison content will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline" id="closeComparisonBtn">Close</button>
+                    <button class="btn btn-primary" id="exportComparisonBtn">
+                        <i class="fas fa-download"></i> Export Comparison
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal" id="deleteModal">
+            <div class="modal-overlay"></div>
+            <div class="modal-dialog modal-small">
+                <div class="modal-header">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Confirm Delete</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="delete-warning">
+                        <div class="warning-icon">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                        <div class="warning-content">
+                            <h4>Delete Selected Recordings?</h4>
+                            <p>This action cannot be undone. All selected recordings and their analysis results will be permanently deleted.</p>
+                            <div class="delete-count">
+                                <i class="fas fa-microphone"></i>
+                                <span id="deleteCount">0</span> recordings will be deleted
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline" id="cancelDeleteBtn">Cancel</button>
+                    <button class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="fas fa-trash-alt"></i> Delete Permanently
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Bottom Navigation -->
+        <nav class="mobile-nav">
+            <a href="homepage.html" class="mobile-nav-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="record.html" class="mobile-nav-item">
+                <i class="fas fa-microphone"></i>
+                <span>Record</span>
+            </a>
+            <a href="prediction_result.html" class="mobile-nav-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Results</span>
+            </a>
+            <a href="history.html" class="mobile-nav-item active">
+                <i class="fas fa-history"></i>
+                <span>History</span>
+            </a>
+        </nav>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/history.js"></script>
+</body>
+</html>
