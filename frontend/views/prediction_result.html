@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Health | Analysis Results</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="brand">
+                <i class="fas fa-heartbeat"></i>
+                <h2>Voice Health</h2>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-content">
+            <!-- User Profile Card -->
+            <div class="user-profile">
+                <div class="avatar">
+                    <img src="https://i.pravatar.cc/100?img=5" alt="User Avatar" id="userAvatar">
+                    <span class="status-indicator online"></span>
+                </div>
+                <div class="user-info">
+                    <h3 id="userName">Loading...</h3>
+                    <p id="userEmail">user@example.com</p>
+                    <div class="user-stats">
+                        <span><i class="fas fa-chart-bar"></i> <span id="totalAnalyses">0</span> analyses</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="homepage.html">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="record.html">
+                        <i class="fas fa-microphone"></i>
+                        <span>Record Voice</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="prediction_result.html">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Results</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="history.html">
+                        <i class="fas fa-history"></i>
+                        <span>History</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="evaluation.html">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Evaluation</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="nav-divider"></li>
+                <li class="nav-item">
+                    <a href="help.html">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Help & Support</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Quick Stats -->
+            <div class="sidebar-stats">
+                <h4>Voice Health Score</h4>
+                <div class="score-circle">
+                    <div class="circle-progress" id="healthScoreCircle">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                            <circle class="circle-bg" cx="60" cy="60" r="54"></circle>
+                            <circle class="circle-fill" cx="60" cy="60" r="54"></circle>
+                        </svg>
+                        <div class="score-text">
+                            <span id="healthScore">85</span>
+                            <small>/100</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="score-trend">
+                    <i class="fas fa-arrow-up trend-up"></i>
+                    <span>Improved by 5% from last week</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <span class="status-dot"></span>
+                <span>System Status: <strong>Online</strong></span>
+            </div>
+            <p class="version">v1.0.0</p>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Analysis Results</h1>
+                <p class="subtitle" id="analysisTimestamp">Analyzed just now</p>
+            </div>
+            
+            <div class="header-right">
+                <div class="result-actions">
+                    <button class="btn btn-outline" onclick="window.location.href='record.html'">
+                        <i class="fas fa-microphone"></i> New Recording
+                    </button>
+                    <button class="btn btn-primary" id="shareResultsBtn">
+                        <i class="fas fa-share-alt"></i> Share Results
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Results Content -->
+        <div class="results-container">
+            <!-- Left Column: Main Results -->
+            <div class="main-results">
+                <!-- Overall Result Card -->
+                <div class="result-card summary-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-stethoscope"></i> Voice Health Summary</h2>
+                        <div class="confidence-badge">
+                            <i class="fas fa-brain"></i>
+                            <span>AI Confidence: <strong id="confidenceScore">92%</strong></span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="overall-result">
+                            <div class="result-icon" id="resultIcon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="result-details">
+                                <h3 id="overallStatus">Normal Voice Patterns</h3>
+                                <p class="result-description" id="resultDescription">
+                                    Your voice analysis shows patterns within normal ranges. No significant anomalies detected.
+                                </p>
+                                <div class="severity-indicator">
+                                    <span class="severity-label">Severity Level:</span>
+                                    <div class="severity-bar">
+                                        <div class="severity-fill" id="severityFill"></div>
+                                    </div>
+                                    <span class="severity-text" id="severityText">Low</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="key-metrics">
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <i class="fas fa-wave-square"></i>
+                                    <h4>Pitch Stability</h4>
+                                </div>
+                                <div class="metric-value" id="pitchStability">94%</div>
+                                <div class="metric-trend up">
+                                    <i class="fas fa-arrow-up"></i> 3%
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <i class="fas fa-volume-up"></i>
+                                    <h4>Voice Clarity</h4>
+                                </div>
+                                <div class="metric-value" id="voiceClarity">88%</div>
+                                <div class="metric-trend up">
+                                    <i class="fas fa-arrow-up"></i> 2%
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <i class="fas fa-wind"></i>
+                                    <h4>Breath Control</h4>
+                                </div>
+                                <div class="metric-value" id="breathControl">82%</div>
+                                <div class="metric-trend down">
+                                    <i class="fas fa-arrow-down"></i> 1%
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <i class="fas fa-chart-line"></i>
+                                    <h4>Consistency</h4>
+                                </div>
+                                <div class="metric-value" id="consistency">91%</div>
+                                <div class="metric-trend stable">
+                                    <i class="fas fa-minus"></i> 0%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <div class="medical-disclaimer">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p><strong>Important:</strong> This is not a medical diagnosis. Consult a healthcare professional for medical advice.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Analysis -->
+                <div class="result-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-chart-bar"></i> Detailed Analysis</h2>
+                        <button class="btn btn-text" id="toggleDetails">
+                            <i class="fas fa-chevron-down"></i> Show Details
+                        </button>
+                    </div>
+                    
+                    <div class="card-body" id="detailedAnalysis" style="display: none;">
+                        <div class="analysis-tabs">
+                            <div class="tab-nav">
+                                <button class="tab-btn active" data-tab="features">Extracted Features</button>
+                                <button class="tab-btn" data-tab="patterns">Voice Patterns</button>
+                                <button class="tab-btn" data-tab="comparison">Trend Comparison</button>
+                            </div>
+                            
+                            <div class="tab-content">
+                                <!-- Features Tab -->
+                                <div class="tab-pane active" data-tab="features">
+                                    <div class="features-grid">
+                                        <div class="feature-item">
+                                            <div class="feature-header">
+                                                <i class="fas fa-soundwave"></i>
+                                                <h4>MFCC Features</h4>
+                                            </div>
+                                            <p>Mel-Frequency Cepstral Coefficients extracted from your voice signal.</p>
+                                            <div class="feature-stats">
+                                                <span class="stat"><strong>13 Coefficients</strong> extracted</span>
+                                                <span class="stat"><strong>Normal range:</strong> Within 2σ</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="feature-item">
+                                            <div class="feature-header">
+                                                <i class="fas fa-sliders-h"></i>
+                                                <h4>Pitch Analysis</h4>
+                                            </div>
+                                            <p>Fundamental frequency (F0) and pitch variation analysis.</p>
+                                            <div class="feature-stats">
+                                                <span class="stat"><strong>Mean F0:</strong> 185 Hz</span>
+                                                <span class="stat"><strong>Jitter:</strong> 0.45% (Normal)</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="feature-item">
+                                            <div class="feature-header">
+                                                <i class="fas fa-bullseye"></i>
+                                                <h4>Energy Profile</h4>
+                                            </div>
+                                            <p>Voice intensity and energy distribution across frequencies.</p>
+                                            <div class="feature-stats">
+                                                <span class="stat"><strong>RMS Energy:</strong> 0.42</span>
+                                                <span class="stat"><strong>Shimmer:</strong> 2.8% (Normal)</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="feature-item">
+                                            <div class="feature-header">
+                                                <i class="fas fa-filter"></i>
+                                                <h4>Spectral Features</h4>
+                                            </div>
+                                            <p>Spectral centroid, bandwidth, rolloff, and contrast analysis.</p>
+                                            <div class="feature-stats">
+                                                <span class="stat"><strong>Centroid:</strong> 1250 Hz</span>
+                                                <span class="stat"><strong>Bandwidth:</strong> 850 Hz</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="feature-item">
+                                            <div class="feature-header">
+                                                <i class="fas fa-random"></i>
+                                                <h4>Zero Crossing Rate</h4>
+                                            </div>
+                                            <p>Rate of sign changes in the audio signal.</p>
+                                            <div class="feature-stats">
+                                                <span class="stat"><strong>ZCR:</strong> 0.12</span>
+                                                <span class="stat"><strong>Noise ratio:</strong> Low</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="feature-item">
+                                            <div class="feature-header">
+                                                <i class="fas fa-heartbeat"></i>
+                                                <h4>Harmonic Analysis</h4>
+                                            </div>
+                                            <p>Harmonics-to-Noise Ratio (HNR) and formant analysis.</p>
+                                            <div class="feature-stats">
+                                                <span class="stat"><strong>HNR:</strong> 18 dB</span>
+                                                <span class="stat"><strong>Formants:</strong> F1-F4 detected</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Patterns Tab -->
+                                <div class="tab-pane" data-tab="patterns">
+                                    <div class="pattern-analysis">
+                                        <h3>Voice Pattern Detection</h3>
+                                        <div class="pattern-list">
+                                            <div class="pattern-item normal">
+                                                <div class="pattern-icon">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </div>
+                                                <div class="pattern-content">
+                                                    <h4>Normal Vocal Fold Vibration</h4>
+                                                    <p>Regular and symmetric vocal cord vibration patterns detected.</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="pattern-item normal">
+                                                <div class="pattern-icon">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </div>
+                                                <div class="pattern-content">
+                                                    <h4>Stable Pitch Control</h4>
+                                                    <p>Consistent fundamental frequency with minimal variations.</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="pattern-item attention">
+                                                <div class="pattern-icon">
+                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                </div>
+                                                <div class="pattern-content">
+                                                    <h4>Slight Breathiness Detected</h4>
+                                                    <p>Minor increase in noise component during sustained vowels.</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="pattern-item normal">
+                                                <div class="pattern-icon">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </div>
+                                                <div class="pattern-content">
+                                                    <h4>Normal Articulation</h4>
+                                                    <p>Clear consonant production and speech intelligibility.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="pattern-chart">
+                                            <h4>Voice Quality Distribution</h4>
+                                            <canvas id="patternChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Comparison Tab -->
+                                <div class="tab-pane" data-tab="comparison">
+                                    <div class="comparison-analysis">
+                                        <h3>Comparison with Previous Recordings</h3>
+                                        <div class="comparison-stats">
+                                            <div class="comparison-item improved">
+                                                <div class="comparison-icon">
+                                                    <i class="fas fa-arrow-up"></i>
+                                                </div>
+                                                <div class="comparison-content">
+                                                    <h4>Pitch Stability Improved</h4>
+                                                    <p>Increased by 5% compared to last week's recording</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="comparison-item stable">
+                                                <div class="comparison-icon">
+                                                    <i class="fas fa-minus"></i>
+                                                </div>
+                                                <div class="comparison-content">
+                                                    <h4>Voice Clarity Stable</h4>
+                                                    <p>No significant change from previous analysis</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="comparison-item declined">
+                                                <div class="comparison-icon">
+                                                    <i class="fas fa-arrow-down"></i>
+                                                </div>
+                                                <div class="comparison-content">
+                                                    <h4>Breath Control Slight Decline</h4>
+                                                    <p>Decreased by 2% - monitor for next recording</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="trend-chart">
+                                            <h4>30-Day Trend Analysis</h4>
+                                            <canvas id="trendChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommendations -->
+                <div class="result-card recommendations-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-lightbulb"></i> Recommendations</h2>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="recommendations-list">
+                            <div class="recommendation">
+                                <div class="recommendation-icon primary">
+                                    <i class="fas fa-tint"></i>
+                                </div>
+                                <div class="recommendation-content">
+                                    <h4>Stay Hydrated</h4>
+                                    <p>Drink 8 glasses of water daily to maintain vocal cord lubrication.</p>
+                                    <span class="recommendation-priority">High Priority</span>
+                                </div>
+                            </div>
+                            
+                            <div class="recommendation">
+                                <div class="recommendation-icon success">
+                                    <i class="fas fa-bed"></i>
+                                </div>
+                                <div class="recommendation-content">
+                                    <h4>Get Adequate Rest</h4>
+                                    <p>Ensure 7-8 hours of sleep for vocal cord recovery.</p>
+                                    <span class="recommendation-priority">Medium Priority</span>
+                                </div>
+                            </div>
+                            
+                            <div class="recommendation">
+                                <div class="recommendation-icon warning">
+                                    <i class="fas fa-volume-mute"></i>
+                                </div>
+                                <div class="recommendation-content">
+                                    <h4>Voice Rest Periods</h4>
+                                    <p>Take 10-minute voice breaks every hour during extended speaking.</p>
+                                    <span class="recommendation-priority">Medium Priority</span>
+                                </div>
+                            </div>
+                            
+                            <div class="recommendation">
+                                <div class="recommendation-icon info">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="recommendation-content">
+                                    <h4>Follow-up Recording</h4>
+                                    <p>Record your voice again in 3 days to monitor changes.</p>
+                                    <span class="recommendation-priority">Low Priority</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Side Panel -->
+            <div class="results-sidebar">
+                <!-- Recording Info -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-info-circle"></i> Recording Details</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="recording-info">
+                            <div class="info-item">
+                                <span class="info-label">Recording ID</span>
+                                <span class="info-value" id="recordingId">REC-20231215-001</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Date & Time</span>
+                                <span class="info-value" id="recordingDateTime">Dec 15, 2023 • 14:30</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Duration</span>
+                                <span class="info-value" id="recordingDuration">32 seconds</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Audio Quality</span>
+                                <span class="info-value quality-good">Good</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Environment</span>
+                                <span class="info-value" id="recordingEnvironment">Quiet room</span>
+                            </div>
+                        </div>
+                        
+                        <div class="audio-preview">
+                            <h4>Recording Preview</h4>
+                            <div class="audio-player-small">
+                                <button class="play-btn-small" id="previewPlayBtn">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <div class="audio-progress">
+                                    <div class="progress-bar-small">
+                                        <div class="progress-fill-small"></div>
+                                    </div>
+                                </div>
+                                <span class="audio-time">0:32</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Indicators -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-heartbeat"></i> Health Indicators</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="indicators-list">
+                            <div class="indicator">
+                                <div class="indicator-icon normal">
+                                    <i class="fas fa-lungs"></i>
+                                </div>
+                                <div class="indicator-content">
+                                    <h4>Respiratory Function</h4>
+                                    <p>Normal breathing patterns detected</p>
+                                </div>
+                            </div>
+                            
+                            <div class="indicator">
+                                <div class="indicator-icon normal">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div class="indicator-content">
+                                    <h4>Neuromuscular Control</h4>
+                                    <p>Stable vocal cord coordination</p>
+                                </div>
+                            </div>
+                            
+                            <div class="indicator">
+                                <div class="indicator-icon attention">
+                                    <i class="fas fa-water"></i>
+                                </div>
+                                <div class="indicator-content">
+                                    <h4>Hydration Level</h4>
+                                    <p>Slight indication of reduced hydration</p>
+                                </div>
+                            </div>
+                            
+                            <div class="indicator">
+                                <div class="indicator-icon normal">
+                                    <i class="fas fa-weight"></i>
+                                </div>
+                                <div class="indicator-content">
+                                    <h4>Stress Level</h4>
+                                    <p>Within normal physiological range</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Options -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-download"></i> Export Results</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="export-options">
+                            <button class="export-btn" data-format="pdf">
+                                <i class="fas fa-file-pdf"></i>
+                                <span>Download PDF Report</span>
+                            </button>
+                            <button class="export-btn" data-format="csv">
+                                <i class="fas fa-file-csv"></i>
+                                <span>Export Raw Data (CSV)</span>
+                            </button>
+                            <button class="export-btn" data-format="share">
+                                <i class="fas fa-share-medical"></i>
+                                <span>Share with Doctor</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Next Steps -->
+                <div class="sidebar-card next-steps">
+                    <div class="card-header">
+                        <h3><i class="fas fa-forward"></i> Next Steps</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="steps-list">
+                            <div class="step-item">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Review Recommendations</h4>
+                                    <p>Follow the personalized suggestions above</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Schedule Follow-up</h4>
+                                    <p>Record again in 3-7 days to track progress</p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Consult Professional</h4>
+                                    <p>Share results with your healthcare provider</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Actions -->
+        <div class="results-actions">
+            <button class="btn btn-outline" onclick="window.location.href='history.html'">
+                <i class="fas fa-history"></i> View History
+            </button>
+            <button class="btn btn-primary" onclick="window.location.href='record.html'">
+                <i class="fas fa-microphone"></i> New Recording
+            </button>
+            <button class="btn btn-success" onclick="window.location.href='evaluation.html'">
+                <i class="fas fa-chart-line"></i> View Trends
+            </button>
+        </div>
+
+        <!-- Mobile Bottom Navigation -->
+        <nav class="mobile-nav">
+            <a href="homepage.html" class="mobile-nav-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="record.html" class="mobile-nav-item">
+                <i class="fas fa-microphone"></i>
+                <span>Record</span>
+            </a>
+            <a href="prediction_result.html" class="mobile-nav-item active">
+                <i class="fas fa-chart-bar"></i>
+                <span>Results</span>
+            </a>
+            <a href="profile.html" class="mobile-nav-item">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+        </nav>
+    </main>
+
+    <!-- Share Modal -->
+    <div class="modal" id="shareModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-dialog modal-small">
+            <div class="modal-header">
+                <h3><i class="fas fa-share-alt"></i> Share Results</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="share-options">
+                    <div class="share-option">
+                        <div class="share-icon email">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="share-content">
+                            <h4>Email Report</h4>
+                            <p>Send PDF report to email address</p>
+                        </div>
+                        <button class="btn btn-sm btn-outline">Share</button>
+                    </div>
+                    
+                    <div class="share-option">
+                        <div class="share-icon doctor">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="share-content">
+                            <h4>Healthcare Provider</h4>
+                            <p>Share with your doctor securely</p>
+                        </div>
+                        <button class="btn btn-sm btn-outline">Share</button>
+                    </div>
+                    
+                    <div class="share-option">
+                        <div class="share-icon link">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <div class="share-content">
+                            <h4>Generate Link</h4>
+                            <p>Create shareable link (expires in 7 days)</p>
+                        </div>
+                        <button class="btn btn-sm btn-outline">Create</button>
+                    </div>
+                </div>
+                
+                <div class="share-note">
+                    <i class="fas fa-lock"></i>
+                    <p>All shared data is encrypted and complies with privacy regulations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/results.js"></script>
+</body>
+</html>
