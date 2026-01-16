@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Health | Record Voice</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Sidebar (Same as homepage) -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="brand">
+                <i class="fas fa-heartbeat"></i>
+                <h2>Voice Health</h2>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-content">
+            <!-- User Profile Card -->
+            <div class="user-profile">
+                <div class="avatar">
+                    <img src="https://i.pravatar.cc/100?img=5" alt="User Avatar" id="userAvatar">
+                    <span class="status-indicator online"></span>
+                </div>
+                <div class="user-info">
+                    <h3 id="userName">Loading...</h3>
+                    <p id="userEmail">user@example.com</p>
+                    <div class="user-stats">
+                        <span><i class="fas fa-microphone"></i> <span id="totalRecordings">0</span> recordings</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="homepage.html">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="record.html">
+                        <i class="fas fa-microphone"></i>
+                        <span>Record Voice</span>
+                        <span class="nav-badge new">New</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="prediction_result.html">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Latest Results</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="history.html">
+                        <i class="fas fa-history"></i>
+                        <span>History</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="evaluation.html">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Evaluation</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="nav-divider"></li>
+                <li class="nav-item">
+                    <a href="help.html">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Help & Support</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Recording Tips -->
+            <div class="sidebar-tips">
+                <h4><i class="fas fa-lightbulb"></i> Recording Tips</h4>
+                <ul>
+                    <li>Find a quiet environment</li>
+                    <li>Speak naturally and clearly</li>
+                    <li>Hold the microphone 6-8 inches away</li>
+                    <li>Breathe normally before speaking</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <span class="status-dot"></span>
+                <span>System Status: <strong>Online</strong></span>
+            </div>
+            <p class="version">v1.0.0</p>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Record Your Voice</h1>
+                <p class="subtitle">AI-powered voice analysis for health insights</p>
+            </div>
+            
+            <div class="header-right">
+                <button class="btn btn-outline" onclick="window.location.href='history.html'">
+                    <i class="fas fa-history"></i> View History
+                </button>
+            </div>
+        </header>
+
+        <!-- Recording Content -->
+        <div class="recording-container">
+            <!-- Left Column: Recording Interface -->
+            <div class="recording-interface">
+                <!-- Step Indicator -->
+                <div class="recording-steps">
+                    <div class="step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Prepare</div>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Record</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Review</div>
+                    </div>
+                    <div class="step" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-label">Analyze</div>
+                    </div>
+                </div>
+
+                <!-- Step 1: Preparation -->
+                <div class="recording-step active" data-step="1">
+                    <div class="step-header">
+                        <h2><i class="fas fa-clipboard-check"></i> Preparation</h2>
+                        <p>Get ready for voice recording</p>
+                    </div>
+                    
+                    <div class="preparation-checklist">
+                        <h3><i class="fas fa-list-check"></i> Checklist Before Recording</h3>
+                        
+                        <div class="checklist-item">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="checkQuiet">
+                                <span class="checkmark"></span>
+                                <span class="checklist-text">
+                                    <strong>Quiet Environment</strong>
+                                    <span>Find a quiet room with minimal background noise</span>
+                                </span>
+                            </label>
+                        </div>
+                        
+                        <div class="checklist-item">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="checkMicrophone">
+                                <span class="checkmark"></span>
+                                <span class="checklist-text">
+                                    <strong>Microphone Check</strong>
+                                    <span>Ensure your microphone is working properly</span>
+                                </span>
+                            </label>
+                            <button class="btn-test-microphone" id="testMicrophoneBtn">
+                                <i class="fas fa-microphone"></i> Test Microphone
+                            </button>
+                        </div>
+                        
+                        <div class="checklist-item">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="checkPosture">
+                                <span class="checkmark"></span>
+                                <span class="checklist-text">
+                                    <strong>Correct Posture</strong>
+                                    <span>Sit upright with relaxed shoulders</span>
+                                </span>
+                            </label>
+                        </div>
+                        
+                        <div class="checklist-item">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="checkHydration">
+                                <span class="checkmark"></span>
+                                <span class="checklist-text">
+                                    <strong>Stay Hydrated</strong>
+                                    <span>Drink water before recording for clear voice</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="recording-instructions">
+                        <h3><i class="fas fa-info-circle"></i> What to Expect</h3>
+                        <p>You'll be asked to:</p>
+                        <ol>
+                            <li>Read a short standardized passage</li>
+                            <li>Hold sustained vowel sounds (Ah, Ee, Oo)</li>
+                            <li>Speak naturally for 30 seconds</li>
+                            <li>The entire process takes 2-3 minutes</li>
+                        </ol>
+                        <div class="note">
+                            <i class="fas fa-stethoscope"></i>
+                            <p><strong>Note:</strong> This is not a medical diagnosis. Results are for informational purposes only.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button class="btn btn-primary" id="startRecordingBtn">
+                            <i class="fas fa-microphone"></i> Start Recording
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Recording -->
+                <div class="recording-step" data-step="2">
+                    <div class="step-header">
+                        <h2><i class="fas fa-microphone"></i> Recording Session</h2>
+                        <p>Follow the prompts and speak clearly</p>
+                    </div>
+                    
+                    <!-- Recording Visualization -->
+                    <div class="recording-visualization">
+                        <div class="visualization-header">
+                            <h3>Voice Waveform</h3>
+                            <div class="recording-timer">
+                                <i class="fas fa-clock"></i>
+                                <span id="recordingTimer">00:00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="waveform-container">
+                            <canvas id="waveformCanvas"></canvas>
+                        </div>
+                        
+                        <div class="volume-indicator">
+                            <div class="volume-bar" id="volumeBar"></div>
+                            <div class="volume-labels">
+                                <span>Low</span>
+                                <span>Optimal</span>
+                                <span>High</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recording Prompts -->
+                    <div class="recording-prompts">
+                        <div class="prompt-card active">
+                            <div class="prompt-header">
+                                <span class="prompt-number">1/3</span>
+                                <span class="prompt-type">Standard Passage</span>
+                            </div>
+                            <div class="prompt-content">
+                                <p id="currentPrompt">Please read the following passage clearly and at your normal speaking pace:</p>
+                                <div class="passage-text">
+                                    <p>"The rainbow is a division of white light into many beautiful colors. These take the shape of a long round arch, with its path high above, and its two ends apparently beyond the horizon."</p>
+                                </div>
+                            </div>
+                            <div class="prompt-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 33%"></div>
+                                </div>
+                                <span>33% Complete</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recording Controls -->
+                    <div class="recording-controls">
+                        <button class="btn-control btn-pause" id="pauseRecordingBtn">
+                            <i class="fas fa-pause"></i>
+                            <span>Pause</span>
+                        </button>
+                        
+                        <button class="btn-control btn-stop" id="stopRecordingBtn">
+                            <i class="fas fa-stop"></i>
+                            <span>Stop</span>
+                        </button>
+                        
+                        <button class="btn-control btn-record active" id="recordBtn">
+                            <i class="fas fa-circle"></i>
+                            <span>Recording...</span>
+                        </button>
+                    </div>
+                    
+                    <div class="recording-notes">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Please speak clearly and at a consistent volume. Background noise may affect results.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3: Review -->
+                <div class="recording-step" data-step="3">
+                    <div class="step-header">
+                        <h2><i class="fas fa-headphones"></i> Review Recording</h2>
+                        <p>Listen to your recording and decide</p>
+                    </div>
+                    
+                    <div class="review-container">
+                        <!-- Audio Player -->
+                        <div class="audio-player">
+                            <div class="player-header">
+                                <h3>Your Recording</h3>
+                                <span class="recording-length" id="recordingLength">00:30</span>
+                            </div>
+                            
+                            <div class="player-controls">
+                                <button class="player-btn" id="rewindBtn">
+                                    <i class="fas fa-backward"></i>
+                                </button>
+                                
+                                <button class="player-btn play-btn" id="playBtn">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                
+                                <button class="player-btn" id="forwardBtn">
+                                    <i class="fas fa-forward"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="player-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="playbackProgress"></div>
+                                </div>
+                                <div class="progress-time">
+                                    <span id="currentTime">00:00</span>
+                                    <span id="totalTime">00:30</span>
+                                </div>
+                            </div>
+                            
+                            <div class="player-volume">
+                                <i class="fas fa-volume-down"></i>
+                                <input type="range" id="volumeSlider" min="0" max="100" value="80">
+                                <i class="fas fa-volume-up"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Recording Quality -->
+                        <div class="quality-assessment">
+                            <h3><i class="fas fa-chart-line"></i> Quality Assessment</h3>
+                            <div class="quality-metrics">
+                                <div class="quality-metric">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-volume-up"></i>
+                                    </div>
+                                    <div class="metric-info">
+                                        <span class="metric-label">Volume Level</span>
+                                        <div class="metric-bar">
+                                            <div class="metric-fill" style="width: 85%"></div>
+                                        </div>
+                                        <span class="metric-value good">Good</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="quality-metric">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-wave-square"></i>
+                                    </div>
+                                    <div class="metric-info">
+                                        <span class="metric-label">Clarity</span>
+                                        <div class="metric-bar">
+                                            <div class="metric-fill" style="width: 78%"></div>
+                                        </div>
+                                        <span class="metric-value fair">Fair</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="quality-metric">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-ban"></i>
+                                    </div>
+                                    <div class="metric-info">
+                                        <span class="metric-label">Background Noise</span>
+                                        <div class="metric-bar">
+                                            <div class="metric-fill" style="width: 25%"></div>
+                                        </div>
+                                        <span class="metric-value good">Low</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="quality-recommendation">
+                                <div class="recommendation-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="recommendation-content">
+                                    <h4>Recording Quality: Acceptable</h4>
+                                    <p>Your recording has acceptable quality for analysis. You may proceed or record again for better results.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="review-actions">
+                            <button class="btn btn-outline" id="recordAgainBtn">
+                                <i class="fas fa-redo"></i> Record Again
+                            </button>
+                            <button class="btn btn-primary" id="submitRecordingBtn">
+                                <i class="fas fa-chart-bar"></i> Analyze Recording
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Analysis -->
+                <div class="recording-step" data-step="4">
+                    <div class="step-header">
+                        <h2><i class="fas fa-chart-bar"></i> Analysis in Progress</h2>
+                        <p>AI is analyzing your voice recording</p>
+                    </div>
+                    
+                    <div class="analysis-container">
+                        <!-- Progress Animation -->
+                        <div class="analysis-progress">
+                            <div class="progress-circle">
+                                <div class="circle">
+                                    <svg width="120" height="120" viewBox="0 0 120 120">
+                                        <circle class="circle-bg" cx="60" cy="60" r="54"></circle>
+                                        <circle class="circle-progress" cx="60" cy="60" r="54"></circle>
+                                    </svg>
+                                    <div class="progress-text">
+                                        <span id="progressPercent">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="progress-status">
+                                <h3>Processing Your Voice</h3>
+                                <p id="progressMessage">Initializing audio processing...</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Processing Steps -->
+                        <div class="processing-steps">
+                            <div class="processing-step active">
+                                <div class="step-icon">
+                                    <i class="fas fa-file-audio"></i>
+                                </div>
+                                <div class="step-content">
+                                    <h4>Audio Preprocessing</h4>
+                                    <p>Cleaning and preparing audio signal</p>
+                                </div>
+                                <div class="step-status">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="processing-step">
+                                <div class="step-icon">
+                                    <i class="fas fa-wave-square"></i>
+                                </div>
+                                <div class="step-content">
+                                    <h4>Feature Extraction</h4>
+                                    <p>Extracting MFCC, pitch, and spectral features</p>
+                                </div>
+                                <div class="step-status">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="processing-step">
+                                <div class="step-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div class="step-content">
+                                    <h4>AI Analysis</h4>
+                                    <p>Running machine learning models</p>
+                                </div>
+                                <div class="step-status">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="processing-step">
+                                <div class="step-icon">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                                <div class="step-content">
+                                    <h4>Generating Results</h4>
+                                    <p>Compiling analysis report</p>
+                                </div>
+                                <div class="step-status">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Estimated Time -->
+                        <div class="estimated-time">
+                            <i class="fas fa-clock"></i>
+                            <span>Estimated time remaining: <strong id="timeRemaining">45 seconds</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Instructions & Tips -->
+            <div class="recording-sidebar">
+                <!-- Microphone Status -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-microphone"></i> Microphone Status</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="microphone-status">
+                            <div class="status-indicator active">
+                                <div class="status-dot"></div>
+                                <span>Connected</span>
+                            </div>
+                            <div class="microphone-info">
+                                <p>Default Microphone</p>
+                                <span class="device-name" id="deviceName">Built-in Microphone</span>
+                            </div>
+                        </div>
+                        
+                        <div class="permission-status">
+                            <div class="permission-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="permission-info">
+                                <h4>Permissions Granted</h4>
+                                <p>Your browser has microphone access</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recording Guidelines -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-clipboard-list"></i> Recording Guidelines</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="guidelines-list">
+                            <div class="guideline">
+                                <div class="guideline-icon">
+                                    <i class="fas fa-volume-up"></i>
+                                </div>
+                                <div class="guideline-content">
+                                    <h4>Speak Naturally</h4>
+                                    <p>Use your normal speaking voice and pace</p>
+                                </div>
+                            </div>
+                            
+                            <div class="guideline">
+                                <div class="guideline-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="guideline-content">
+                                    <h4>Proper Posture</h4>
+                                    <p>Sit upright with relaxed shoulders</p>
+                                </div>
+                            </div>
+                            
+                            <div class="guideline">
+                                <div class="guideline-icon">
+                                    <i class="fas fa-ruler"></i>
+                                </div>
+                                <div class="guideline-content">
+                                    <h4>Microphone Distance</h4>
+                                    <p>Keep 6-8 inches from your mouth</p>
+                                </div>
+                            </div>
+                            
+                            <div class="guideline">
+                                <div class="guideline-icon">
+                                    <i class="fas fa-ban"></i>
+                                </div>
+                                <div class="guideline-content">
+                                    <h4>Avoid Background Noise</h4>
+                                    <p>Find a quiet environment</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Tips -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-lightbulb"></i> Quick Tips</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="tips-carousel">
+                            <div class="tip active">
+                                <div class="tip-icon">
+                                    <i class="fas fa-tint"></i>
+                                </div>
+                                <div class="tip-content">
+                                    <p>Drink water before recording to ensure vocal clarity</p>
+                                </div>
+                            </div>
+                            
+                            <div class="tip">
+                                <div class="tip-icon">
+                                    <i class="fas fa-wind"></i>
+                                </div>
+                                <div class="tip-content">
+                                    <p>Avoid recording in windy environments or near fans</p>
+                                </div>
+                            </div>
+                            
+                            <div class="tip">
+                                <div class="tip-icon">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <div class="tip-content">
+                                    <p>Put your phone on silent to avoid interruptions</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="carousel-controls">
+                            <button class="carousel-btn prev">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <div class="carousel-dots">
+                                <span class="dot active"></span>
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                            </div>
+                            <button class="carousel-btn next">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy Notice -->
+                <div class="sidebar-card privacy-notice">
+                    <div class="card-header">
+                        <h3><i class="fas fa-shield-alt"></i> Privacy & Security</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="privacy-content">
+                            <p><i class="fas fa-lock"></i> Your voice recording is encrypted and stored securely</p>
+                            <p><i class="fas fa-user-shield"></i> Only you and authorized healthcare providers can access your data</p>
+                            <p><i class="fas fa-trash-alt"></i> You can delete recordings anytime from your history</p>
+                            <p><i class="fas fa-stethoscope"></i> This tool is for informational purposes only</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Bottom Navigation -->
+        <nav class="mobile-nav">
+            <a href="homepage.html" class="mobile-nav-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="record.html" class="mobile-nav-item active">
+                <i class="fas fa-microphone"></i>
+                <span>Record</span>
+            </a>
+            <a href="prediction_result.html" class="mobile-nav-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Results</span>
+            </a>
+            <a href="profile.html" class="mobile-nav-item">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+        </nav>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/recorder.js"></script>
+</body>
+</html>

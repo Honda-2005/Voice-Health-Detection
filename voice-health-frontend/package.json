@@ -1,0 +1,29 @@
+{
+  "name": "voice-health-detection",
+  "version": "1.0.0",
+  "description": "A web application for voice health detection.",
+  "main": "src/js/app.js",
+  "scripts": {
+    "start": "live-server public",
+    "build": "webpack --mode production",
+    "dev": "webpack --mode development"
+  },
+  "keywords": [
+    "voice",
+    "health",
+    "detection",
+    "web",
+    "application"
+  ],
+  "author": "Honda-2005",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0",
+    "live-server": "^1.2.1"
+  }
+}

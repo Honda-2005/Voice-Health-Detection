@@ -1,159 +1,530 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Voice Health Detection - AI-powered voice analysis for early disease risk screening">
-    <title>Voice Health Detection | AI-Powered Voice Analysis</title>
-
-    <!-- Stylesheets -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Voice Health | Dashboard</title>
     <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container navbar-content">
-            <div class="navbar-brand">Voice Health Detection</div>
-            <ul id="navLinks" class="navbar-nav">
-                <!-- Will be populated by JavaScript -->
+    <!-- Navigation Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="brand">
+                <i class="fas fa-heartbeat"></i>
+                <h2>Voice Health</h2>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-content">
+            <!-- User Profile Card -->
+            <div class="user-profile">
+                <div class="avatar">
+                    <img src="https://i.pravatar.cc/100?img=5" alt="User Avatar" id="userAvatar">
+                    <span class="status-indicator online"></span>
+                </div>
+                <div class="user-info">
+                    <h3 id="userName">Loading...</h3>
+                    <p id="userEmail">user@example.com</p>
+                    <div class="user-stats">
+                        <span><i class="fas fa-microphone"></i> <span id="totalRecordings">0</span> recordings</span>
+                        <span><i class="fas fa-chart-line"></i> <span id="memberSince">0</span> days</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <ul class="nav-menu">
+                <li class="nav-item active">
+                    <a href="homepage.html">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="record.html">
+                        <i class="fas fa-microphone"></i>
+                        <span>Record Voice</span>
+                        <span class="nav-badge new">New</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="prediction_result.html">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Latest Results</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="history.html">
+                        <i class="fas fa-history"></i>
+                        <span>History</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="evaluation.html">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Evaluation</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="nav-divider"></li>
+                <li class="nav-item">
+                    <a href="help.html">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Help & Support</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
             </ul>
+
+            <!-- Quick Stats -->
+            <div class="sidebar-stats">
+                <h4>Quick Stats</h4>
+                <div class="stat-item">
+                    <div class="stat-icon success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="normalCount">0</span>
+                        <span class="stat-label">Normal Results</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="warningCount">0</span>
+                        <span class="stat-label">Warnings</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon primary">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="lastCheck">--</span>
+                        <span class="stat-label">Last Check</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <span class="status-dot"></span>
+                <span>System Status: <strong>Online</strong></span>
+            </div>
+            <p class="version">v1.0.0</p>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <div class="container" style="padding-top: 4rem; padding-bottom: 4rem;">
-        <div style="text-align: center; max-width: 800px; margin: 0 auto;">
-            <h1
-                style="font-size: 3.5rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #818cf8, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
-                Voice Health Detection
-            </h1>
-            <p style="font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 2rem;">
-                AI-powered voice analysis for early disease risk screening. Analyze your voice patterns to detect
-                potential health concerns.
-            </p>
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>Welcome back, <span id="greetingName">User</span>!</h1>
+                <p class="subtitle" id="currentDateTime">Loading date and time...</p>
+            </div>
+            
+            <div class="header-right">
+                <!-- Notification Bell -->
+                <div class="notification-icon">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                    <div class="notification-dropdown">
+                        <h4>Notifications</h4>
+                        <div class="notification-item unread">
+                            <i class="fas fa-microphone notification-icon success"></i>
+                            <div class="notification-content">
+                                <p>New voice analysis completed</p>
+                                <span class="notification-time">2 hours ago</span>
+                            </div>
+                        </div>
+                        <div class="notification-item unread">
+                            <i class="fas fa-chart-line notification-icon warning"></i>
+                            <div class="notification-content">
+                                <p>Trend detected in your voice patterns</p>
+                                <span class="notification-time">1 day ago</span>
+                            </div>
+                        </div>
+                        <div class="notification-item">
+                            <i class="fas fa-calendar notification-icon info"></i>
+                            <div class="notification-content">
+                                <p>Weekly health check reminder</p>
+                                <span class="notification-time">3 days ago</span>
+                            </div>
+                        </div>
+                        <a href="#" class="view-all">View all notifications</a>
+                    </div>
+                </div>
 
-            <div id="heroActions" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                <!-- Will be populated by JavaScript -->
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="btn btn-primary" onclick="window.location.href='record.html'">
+                        <i class="fas fa-plus"></i> New Recording
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Quick Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalRecordingsCard">0</h3>
+                        <p>Total Recordings</p>
+                    </div>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i> 12%
+                    </div>
+                </div>
+                
+                <div class="stat-card success">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="avgConfidence">0%</h3>
+                        <p>Avg. Confidence</p>
+                    </div>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i> 5%
+                    </div>
+                </div>
+                
+                <div class="stat-card warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="attentionNeeded">0</h3>
+                        <p>Need Attention</p>
+                    </div>
+                    <div class="stat-trend negative">
+                        <i class="fas fa-arrow-down"></i> 8%
+                    </div>
+                </div>
+                
+                <div class="stat-card info">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="daysSinceLast">0</h3>
+                        <p>Days Since Last Check</p>
+                    </div>
+                    <div class="stat-trend warning">
+                        <i class="fas fa-clock"></i> Reminder
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="content-grid">
+                <!-- Left Column -->
+                <div class="left-column">
+                    <!-- Recent Recordings -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-history"></i> Recent Recordings</h3>
+                            <a href="history.html" class="view-all-link">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="recordings-list" id="recentRecordings">
+                                <!-- Dynamic content will be loaded here -->
+                                <div class="loading-placeholder">
+                                    <div class="spinner small"></div>
+                                    <p>Loading recent recordings...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="quick-actions-grid">
+                                <button class="action-btn" onclick="window.location.href='record.html'">
+                                    <div class="action-icon primary">
+                                        <i class="fas fa-microphone"></i>
+                                    </div>
+                                    <span>Record Voice</span>
+                                </button>
+                                
+                                <button class="action-btn" onclick="window.location.href='prediction_result.html'">
+                                    <div class="action-icon success">
+                                        <i class="fas fa-chart-bar"></i>
+                                    </div>
+                                    <span>View Results</span>
+                                </button>
+                                
+                                <button class="action-btn" onclick="window.location.href='history.html'">
+                                    <div class="action-icon info">
+                                        <i class="fas fa-history"></i>
+                                    </div>
+                                    <span>Check History</span>
+                                </button>
+                                
+                                <button class="action-btn" onclick="showHealthTips()">
+                                    <div class="action-icon warning">
+                                        <i class="fas fa-heart"></i>
+                                    </div>
+                                    <span>Health Tips</span>
+                                </button>
+                                
+                                <button class="action-btn" onclick="window.location.href='evaluation.html'">
+                                    <div class="action-icon secondary">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <span>Trend Analysis</span>
+                                </button>
+                                
+                                <button class="action-btn" onclick="window.location.href='profile.html'">
+                                    <div class="action-icon dark">
+                                        <i class="fas fa-user-cog"></i>
+                                    </div>
+                                    <span>Profile Settings</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="right-column">
+                    <!-- Health Status -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-heartbeat"></i> Voice Health Status</h3>
+                            <span class="status-badge" id="overallStatus">Normal</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="health-status">
+                                <div class="status-indicator-large" id="statusIndicator">
+                                    <div class="status-circle">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="status-info">
+                                        <h4>Overall Status: <span id="statusText">Normal</span></h4>
+                                        <p id="statusDescription">Your voice patterns are within normal range.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="status-metrics">
+                                    <div class="metric">
+                                        <span class="metric-label">Pitch Stability</span>
+                                        <div class="metric-bar">
+                                            <div class="metric-fill" style="width: 85%"></div>
+                                        </div>
+                                        <span class="metric-value">85%</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span class="metric-label">Voice Clarity</span>
+                                        <div class="metric-bar">
+                                            <div class="metric-fill" style="width: 92%"></div>
+                                        </div>
+                                        <span class="metric-value">92%</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span class="metric-label">Consistency</span>
+                                        <div class="metric-bar">
+                                            <div class="metric-fill" style="width: 78%"></div>
+                                        </div>
+                                        <span class="metric-value">78%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Trends -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-line"></i> Recent Trends</h3>
+                            <div class="time-filter">
+                                <select id="trendFilter">
+                                    <option value="7">Last 7 days</option>
+                                    <option value="30" selected>Last 30 days</option>
+                                    <option value="90">Last 90 days</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="trend-chart-container">
+                                <canvas id="trendChart"></canvas>
+                            </div>
+                            <div class="trend-summary">
+                                <div class="trend-item positive">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <div>
+                                        <span class="trend-label">Improving</span>
+                                        <span class="trend-value">4 metrics</span>
+                                    </div>
+                                </div>
+                                <div class="trend-item stable">
+                                    <i class="fas fa-minus"></i>
+                                    <div>
+                                        <span class="trend-label">Stable</span>
+                                        <span class="trend-value">2 metrics</span>
+                                    </div>
+                                </div>
+                                <div class="trend-item negative">
+                                    <i class="fas fa-arrow-down"></i>
+                                    <div>
+                                        <span class="trend-label">Declining</span>
+                                        <span class="trend-value">1 metric</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Health Tips -->
+                    <div class="dashboard-card tips-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-lightbulb"></i> Daily Health Tip</h3>
+                            <button class="refresh-tips" onclick="loadNewTip()">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="health-tip">
+                                <div class="tip-icon">
+                                    <i class="fas fa-tint"></i>
+                                </div>
+                                <div class="tip-content">
+                                    <h4>Stay Hydrated</h4>
+                                    <p>Drinking enough water helps maintain vocal cord lubrication and prevents voice strain. Aim for 8 glasses daily.</p>
+                                    <div class="tip-meta">
+                                        <span class="tip-category"><i class="fas fa-tag"></i> Vocal Health</span>
+                                        <span class="tip-source"><i class="fas fa-stethoscope"></i> Medical Advice</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Section -->
+            <div class="bottom-section">
+                <!-- Upcoming Checkups -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-calendar-check"></i> Upcoming Checkups</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="checkup-list">
+                            <div class="checkup-item">
+                                <div class="checkup-date">
+                                    <span class="date-day">15</span>
+                                    <span class="date-month">Dec</span>
+                                </div>
+                                <div class="checkup-info">
+                                    <h4>Weekly Voice Analysis</h4>
+                                    <p>Regular voice pattern check</p>
+                                </div>
+                                <button class="btn btn-outline btn-sm">Schedule</button>
+                            </div>
+                            <div class="checkup-item">
+                                <div class="checkup-date upcoming">
+                                    <span class="date-day">22</span>
+                                    <span class="date-month">Dec</span>
+                                </div>
+                                <div class="checkup-info">
+                                    <h4>Monthly Deep Analysis</h4>
+                                    <p>Detailed vocal health assessment</p>
+                                </div>
+                                <button class="btn btn-primary btn-sm">Set Reminder</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Announcements -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-bullhorn"></i> System Announcements</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="announcements">
+                            <div class="announcement-item new">
+                                <div class="announcement-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="announcement-content">
+                                    <h4>New Feature: Voice Trends</h4>
+                                    <p>Track your voice health patterns over time with our new trends analysis.</p>
+                                    <span class="announcement-date">2 days ago</span>
+                                </div>
+                            </div>
+                            <div class="announcement-item">
+                                <div class="announcement-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="announcement-content">
+                                    <h4>Privacy Update</h4>
+                                    <p>Enhanced encryption for your voice recordings and health data.</p>
+                                    <span class="announcement-date">1 week ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Features Section -->
-    <div class="container" style="padding: 4rem 0;">
-        <h2 class="text-center mb-3">Why Choose Voice Health Detection?</h2>
-
-        <div
-            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 3rem;">
-            <!-- Feature 1 -->
-            <div class="card text-center">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">🎤</div>
-                <h3>Advanced AI Analysis</h3>
-                <p class="text-muted">State-of-the-art machine learning models analyze voice patterns for health
-                    indicators</p>
-            </div>
-
-            <!-- Feature 2 -->
-            <div class="card text-center">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">🔒</div>
-                <h3>Secure & Private</h3>
-                <p class="text-muted">Your data is encrypted and stored securely with industry-standard security
-                    protocols</p>
-            </div>
-
-            <!-- Feature 3 -->
-            <div class="card text-center">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
-                <h3>Quick Results</h3>
-                <p class="text-muted">Get instant analysis results with detailed insights and recommendations</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- About Section -->
-    <div class="container" style="padding: 4rem 0;">
-        <div class="card" style="max-width: 800px; margin: 0 auto;">
-            <h2 class="mb-2">About the Project</h2>
-            <p class="text-muted mb-2">
-                Voice Health Detection is an advanced system designed for early disease risk screening using human voice
-                analysis.
-                This platform leverages cutting-edge AI and machine learning techniques to analyze vocal patterns and
-                identify potential health concerns.
-            </p>
-            <p class="text-muted mb-2">
-                <strong>Important:</strong> This is a risk screening tool, not a diagnostic system. Results should be
-                discussed with healthcare professionals.
-            </p>
-            <p class="text-muted">
-                Built with FastAPI, MongoDB, and modern web technologies to provide a secure, scalable, and
-                user-friendly experience.
-            </p>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer
-        style="text-align: center; padding: 2rem; margin-top: 4rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-        <p class="text-muted">
-            © 2026 Voice Health Detection | Person 1 - Authentication & User Management
-        </p>
-    </footer>
+        <!-- Mobile Bottom Navigation -->
+        <nav class="mobile-nav">
+            <a href="homepage.html" class="mobile-nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="record.html" class="mobile-nav-item">
+                <i class="fas fa-microphone"></i>
+                <span>Record</span>
+            </a>
+            <a href="prediction_result.html" class="mobile-nav-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Results</span>
+            </a>
+            <a href="profile.html" class="mobile-nav-item">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+        </nav>
+    </main>
 
     <!-- Scripts -->
-    <script src="../js/api.js"></script>
-    <script>
-        // Update navigation based on auth status
-        function updateNavigation() {
-            const navLinks = document.getElementById('navLinks');
-            const heroActions = document.getElementById('heroActions');
-
-            if (isAuthenticated()) {
-                // Authenticated user navigation
-                const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-                navLinks.innerHTML = `
-                    <li><a href="homepage.html" class="navbar-link">Home</a></li>
-                    <li><a href="profile.html" class="navbar-link">Profile</a></li>
-                    <li><span class="navbar-link">${user.full_name || 'User'}</span></li>
-                `;
-
-                heroActions.innerHTML = `
-                    <a href="profile.html" class="btn btn-primary">Go to Profile</a>
-                    <button onclick="handleLogout()" class="btn btn-secondary">Logout</button>
-                `;
-            } else {
-                // Guest user navigation
-                navLinks.innerHTML = `
-                    <li><a href="homepage.html" class="navbar-link">Home</a></li>
-                    <li><a href="login.html" class="btn btn-primary">Login</a></li>
-                `;
-
-                heroActions.innerHTML = `
-                    <a href="register.html" class="btn btn-primary">Get Started</a>
-                    <a href="login.html" class="btn btn-secondary">Sign In</a>
-                `;
-            }
-        }
-
-        async function handleLogout() {
-            try {
-                await API.auth.logout();
-            } catch (error) {
-                console.error('Logout error:', error);
-            } finally {
-                removeAuthToken();
-                window.location.reload();
-            }
-        }
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', updateNavigation);
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/dashboard.js"></script>
 </body>
-
 </html>
