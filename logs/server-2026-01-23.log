@@ -1,0 +1,14 @@
+[2026-01-23T18:41:08.213Z] → GET /api/health
+[2026-01-23T18:41:08.215Z] ← ✓ 200 GET /api/health (2ms)
+[2026-01-23T18:41:11.659Z] → GET /favicon.ico
+[2026-01-23T18:41:11.667Z] ← ❌ 404 GET /favicon.ico (8ms)
+[2026-01-23T18:41:22.005Z] → GET /api/health
+[2026-01-23T18:41:22.006Z] ← ✓ 200 GET /api/health (1ms)
+[2026-01-23T19:31:24.602Z] → GET /api/health%0A
+[2026-01-23T19:31:24.636Z] ← ❌ 404 GET /api/health%0A (34ms)
+[2026-01-23T19:33:01.023Z] → GET /api/health
+[2026-01-23T19:33:01.025Z] ← ✓ 200 GET /api/health (2ms)
+[2026-01-23T19:47:54.427Z] → GET /api/health
+[2026-01-23T19:47:54.449Z] ← ✓ 200 GET /api/health (22ms)
+[2026-01-23T19:49:29.786Z] → GET /ml/health
+[2026-01-23T19:49:29.790Z] ← ❌ 404 GET /ml/health (4ms)
