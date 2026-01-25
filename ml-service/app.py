@@ -365,9 +365,10 @@ def train():
 @app.errorhandler(404)
 def not_found(error):
     """Handle 404 errors"""
+    logger.error(f"404 Not Found: {request.method} {request.url}")
     return jsonify({
         'success': False,
-        'error': 'Endpoint not found',
+        'error': f'Endpoint not found: {request.method} {request.path}',
     }), 404
 
 @app.errorhandler(500)
@@ -387,4 +388,12 @@ if __name__ == '__main__':
     debug = os.environ.get('FLASK_DEBUG', False)
     
     logger.info(f'Starting ML Service on port {port}...')
+    
+    # Print all registered routes for debugging
+    print("\n📍 Registered ML Routes:")
+    for rule in app.url_map.iter_rules():
+        methods = ','.join(rule.methods - {'HEAD', 'OPTIONS'})
+        print(f"   {methods} {rule.rule}")
+    print("\n")
+    
     app.run(host='0.0.0.0', port=port, debug=debug, threaded=True)

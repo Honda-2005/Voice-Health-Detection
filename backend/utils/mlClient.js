@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import logger from './logger.js';
 import { downloadFromGridFS } from './gridfs.js';
 
-const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001';
+const ML_SERVICE_URL = (process.env.ML_SERVICE_URL || 'http://localhost:5001').replace(/\/$/, '');
 const ML_TIMEOUT = parseInt(process.env.ML_TIMEOUT) || 30000; // 30 seconds
 
 /**
