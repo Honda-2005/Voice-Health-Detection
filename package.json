@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
+    "start:all": "node start.js",
     "dev": "nodemon server.js",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --watch",
