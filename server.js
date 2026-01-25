@@ -16,6 +16,7 @@ import recordingRoutes from './backend/routes/recordingRoutes.js';
 import predictionRoutes from './backend/routes/predictionRoutes.js';
 import evaluationRoutes from './backend/routes/evaluationRoutes.js';
 import adminRoutes from './backend/routes/adminRoutes.js';
+import downloadRoutes from './backend/routes/downloadRoutes.js';
 
 // Import middleware
 import { errorHandler } from './backend/middleware/errorHandler.js';
@@ -80,6 +81,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/recordings', recordingRoutes);
+app.use('/api/v1/recordings', downloadRoutes);
 app.use('/api/v1/predictions', predictionRoutes);
 app.use('/api/v1/evaluation', evaluationRoutes);
 app.use('/api/v1/admin', adminRoutes);
@@ -88,6 +90,7 @@ app.use('/api/v1/admin', adminRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/recordings', recordingRoutes);
+app.use('/api/recordings', downloadRoutes);
 app.use('/api/predictions', predictionRoutes);
 app.use('/api/evaluation', evaluationRoutes);
 app.use('/api/admin', adminRoutes);
