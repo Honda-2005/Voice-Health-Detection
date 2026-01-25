@@ -1,11 +1,12 @@
 import Recording from '../models/Recording.js';
 import Prediction from '../models/Prediction.js';
 import mongoose from 'mongoose';
+import { uploadToGridFS, deleteFromGridFS } from '../utils/gridfs.js';
 
 export const uploadRecording = async (req, res) => {
   try {
     const { filename, duration } = req.body;
-    
+
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -13,10 +14,20 @@ export const uploadRecording = async (req, res) => {
       });
     }
 
+    // Upload audio file to GridFS
+    const fileId = await uploadToGridFS(req.file.buffer, {
+      filename: filename || req.file.originalname,
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size,
+      userId: req.userId,
+    });
+
     // Create recording document
     const recording = new Recording({
       userId: req.userId,
       audioFile: {
+        fileId: fileId,
         filename: filename || req.file.originalname,
         contentType: req.file.mimetype,
         size: req.file.size,
@@ -26,23 +37,19 @@ export const uploadRecording = async (req, res) => {
         sampleRate: 44100, // Default, can be extracted from file
         channels: 1,
         bitDepth: 16,
-        format: 'wav',
+        format: req.file.mimetype.split('/')[1] || 'wav',
       },
       status: 'pending',
     });
 
-    // TODO: Store audio in GridFS
-    // For now, store in memory/file system
-    recording.audioFile.fileId = new mongoose.Types.ObjectId();
-
     await recording.save();
 
-    // Queue for ML processing
-    // TODO: Send to ML service queue
+    // Queue for ML processing (async - don't wait)
+    // TODO: Implement background job queue
 
     res.status(201).json({
       success: true,
-      message: 'Recording uploaded successfully',
+      message: 'Recording uploaded and stored successfully',
       data: recording,
     });
   } catch (error) {
@@ -155,7 +162,7 @@ export const deleteRecording = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const recording = await Recording.findOneAndDelete({
+    const recording = await Recording.findOne({
       _id: id,
       userId: req.userId,
     });
@@ -167,11 +174,22 @@ export const deleteRecording = async (req, res) => {
       });
     }
 
-    // TODO: Delete audio file from GridFS
+    //Delete audio file from GridFS
+    if (recording.audioFile?.fileId) {
+      try {
+        await deleteFromGridFS(recording.audioFile.fileId);
+      } catch (error) {
+        console.error('Failed to delete audio file from GridFS:', error);
+        // Continue with deletion even if GridFS delete fails
+      }
+    }
+
+    // Delete recording document
+    await Recording.deleteOne({ _id: id });
 
     res.json({
       success: true,
-      message: 'Recording deleted',
+      message: 'Recording and audio file deleted',
     });
   } catch (error) {
     res.status(500).json({

@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import 'express-async-errors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import { initGridFS } from './backend/utils/gridfs.js';
 
 // Load environment variables
 dotenv.config();
@@ -54,6 +55,9 @@ const connectDB = async () => {
     });
 
     console.log('✓ MongoDB connected successfully');
+
+    // Initialize GridFS for audio file storage
+    initGridFS(mongoose.connection);
   } catch (error) {
     console.error('✗ MongoDB connection failed:', error.message);
     process.exit(1);
@@ -72,7 +76,15 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// API Routes
+// API Routes - Version 1
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/recordings', recordingRoutes);
+app.use('/api/v1/predictions', predictionRoutes);
+app.use('/api/v1/evaluation', evaluationRoutes);
+app.use('/api/v1/admin', adminRoutes);
+
+// Backward compatibility - /api/ without version (deprecated)
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/recordings', recordingRoutes);
@@ -83,7 +95,7 @@ app.use('/api/admin', adminRoutes);
 // Frontend static files (development)
 if (NODE_ENV === 'development') {
   app.use(express.static('frontend'));
-  
+
   // Serve HTML files for frontend routing
   app.get('/login', (req, res) => res.sendFile('./frontend/views/login.html', { root: '.' }));
   app.get('/register', (req, res) => res.sendFile('./frontend/views/register.html', { root: '.' }));
