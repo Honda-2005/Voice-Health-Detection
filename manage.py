@@ -149,20 +149,30 @@ def command_run(node_exe, npm_exe):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python manage.py [run|test|install]")
+        print("Usage: python manage.py [run|test|install] [--node-path=PATH]")
         return
 
     command = sys.argv[1]
+    
+    # Parse manual node path
+    manual_node_path = None
+    for arg in sys.argv:
+        if arg.startswith("--node-path="):
+            manual_node_path = arg.split("=", 1)[1].strip('"').strip("'")
 
     # Find Environment
-    node_exe = find_node_executable()
-    npm_exe = find_npm_executable(node_exe)
-
-    if node_exe:
-        log("ENV", f"✅ Found Node.js: {node_exe}", Colors.GREEN)
+    if manual_node_path and os.path.exists(manual_node_path):
+        node_exe = manual_node_path
+        log("ENV", f"✅ Using Manual Node.js: {node_exe}", Colors.GREEN)
     else:
-        log("ENV", "❌ Node.js NOT FOUND! Please install from nodejs.org", Colors.FAIL)
-        log("ENV", "   If installed, add to PATH or edit paths in manage.py", Colors.WARNING)
+        node_exe = find_node_executable()
+        if node_exe:
+            log("ENV", f"✅ Found Node.js: {node_exe}", Colors.GREEN)
+        else:
+            log("ENV", "❌ Node.js NOT FOUND! Please install from nodejs.org", Colors.FAIL)
+            log("ENV", "   OR provide path: python manage.py run --node-path=\"C:\\path\\to\\node.exe\"", Colors.WARNING)
+
+    npm_exe = find_npm_executable(node_exe)
 
     # Execute Command
     if command == "install":
@@ -170,6 +180,8 @@ def main():
         run_command("python -m pip install -r ml-service/requirements.txt", capture=False).wait()
         if npm_exe:
             run_command(f'"{npm_exe}" install', capture=False).wait()
+        else:
+            log("ERROR", "Cannot install Node dependencies (npm not found)", Colors.FAIL)
 
     elif command == "test":
         command_test(node_exe, npm_exe)
