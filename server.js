@@ -9,17 +9,17 @@ import mongoose from 'mongoose';
 dotenv.config();
 
 // Import routes
-import authRoutes from './backend-nodejs/routes/authRoutes.js';
-import userRoutes from './backend-nodejs/routes/userRoutes.js';
-import recordingRoutes from './backend-nodejs/routes/recordingRoutes.js';
-import predictionRoutes from './backend-nodejs/routes/predictionRoutes.js';
-import evaluationRoutes from './backend-nodejs/routes/evaluationRoutes.js';
-import adminRoutes from './backend-nodejs/routes/adminRoutes.js';
+import authRoutes from './backend/routes/authRoutes.js';
+import userRoutes from './backend/routes/userRoutes.js';
+import recordingRoutes from './backend/routes/recordingRoutes.js';
+import predictionRoutes from './backend/routes/predictionRoutes.js';
+import evaluationRoutes from './backend/routes/evaluationRoutes.js';
+import adminRoutes from './backend/routes/adminRoutes.js';
 
 // Import middleware
-import { errorHandler } from './backend-nodejs/middleware/errorHandler.js';
-import { requestLogger } from './backend-nodejs/middleware/requestLogger.js';
-import { corsConfig } from './backend-nodejs/middleware/corsConfig.js';
+import { errorHandler } from './backend/middleware/errorHandler.js';
+import { requestLogger } from './backend/middleware/requestLogger.js';
+import { corsConfig } from './backend/middleware/corsConfig.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
