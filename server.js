@@ -19,6 +19,7 @@ import predictionRoutes from './backend/routes/predictionRoutes.js';
 import evaluationRoutes from './backend/routes/evaluationRoutes.js';
 import adminRoutes from './backend/routes/adminRoutes.js';
 import downloadRoutes from './backend/routes/downloadRoutes.js';
+import pdfRoutes from './backend/routes/pdfRoutes.js';
 
 // Import middleware
 import { errorHandler } from './backend/middleware/errorHandler.js';
@@ -132,6 +133,7 @@ app.use('/api/v1/recordings', downloadRoutes);
 app.use('/api/v1/predictions', predictionRoutes);
 app.use('/api/v1/evaluation', evaluationRoutes);
 app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/pdf', pdfRoutes);
 
 // Backward compatibility - /api/ without version (deprecated)
 app.use('/api/auth', authRoutes);
@@ -140,6 +142,7 @@ app.use('/api/recordings', recordingRoutes);
 app.use('/api/recordings', downloadRoutes);
 app.use('/api/predictions', predictionRoutes);
 app.use('/api/evaluation', evaluationRoutes);
+app.use('/api/pdf', pdfRoutes);
 app.use('/api/admin', adminRoutes);
 
 // Frontend static files (development)
