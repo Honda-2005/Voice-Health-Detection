@@ -390,7 +390,7 @@ if __name__ == '__main__':
     logger.info(f'Starting ML Service on port {port}...')
     
     # Print all registered routes for debugging
-    print("\n📍 Registered ML Routes:")
+    print("\n[INFO] Registered ML Routes:")
     for rule in app.url_map.iter_rules():
         methods = ','.join(rule.methods - {'HEAD', 'OPTIONS'})
         print(f"   {methods} {rule.rule}")

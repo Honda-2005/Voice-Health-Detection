@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateJWT } from '../middleware/authMiddleware.js';
+import { authMiddleware as authenticateJWT } from '../middleware/authMiddleware.js';
 import { streamFromGridFS } from '../utils/gridfs.js';
 import Recording from '../models/Recording.js';
 

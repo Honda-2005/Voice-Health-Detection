@@ -9,9 +9,9 @@ import {
 } from '../controllers/userController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import {
-  profileUpdateValidation,
-  medicalInfoValidation,
-  validateRequest,
+  updateProfileValidator as profileUpdateValidation,
+  updateMedicalInfoValidator as medicalInfoValidation,
+  validate as validateRequest,
 } from '../middleware/validators.js';
 
 const router = express.Router();

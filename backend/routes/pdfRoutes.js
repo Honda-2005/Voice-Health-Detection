@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateJWT } from '../middleware/authMiddleware.js';
+import { authMiddleware as authenticateJWT } from '../middleware/authMiddleware.js';
 import {
     exportPredictionPDF,
     exportEvaluationPDF,

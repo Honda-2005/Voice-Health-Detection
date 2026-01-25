@@ -74,7 +74,8 @@ const connectDB = async () => {
     initGridFS(mongoose.connection);
   } catch (error) {
     console.error('✗ MongoDB connection failed:', error.message);
-    process.exit(1);
+    console.warn('! WARNING: Server starting without Database connection. Some features will not work.');
+    // process.exit(1); // Allow server to start for frontend verification
   }
 };
 

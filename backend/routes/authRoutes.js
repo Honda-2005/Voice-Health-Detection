@@ -10,10 +10,9 @@ import {
 } from '../controllers/authController.js';
 import { authLimiter } from '../middleware/rateLimiter.js';
 import {
-  registerValidation,
-  loginValidation,
-  resetPasswordValidation,
-  validateRequest,
+  registerValidator as registerValidation,
+  loginValidator as loginValidation,
+  validate as validateRequest,
 } from '../middleware/validators.js';
 
 const router = express.Router();
@@ -23,7 +22,7 @@ router.post('/login', authLimiter, loginValidation, validateRequest, login);
 router.post('/verify-email', verifyEmail);
 router.post('/refresh-token', refreshToken);
 router.post('/forgot-password', forgotPassword);
-router.post('/reset-password', resetPasswordValidation, validateRequest, resetPassword);
+router.post('/reset-password', validateRequest, resetPassword);
 router.post('/logout', logout);
 
 export default router;
