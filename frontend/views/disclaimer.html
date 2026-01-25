@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Disclaimer - Voice Health Detection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .disclaimer-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 100%;
+            padding: 40px;
+            animation: fadeIn 0.6s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .warning-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+        
+        .disclaimer-content {
+            color: #34495e;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        
+        .disclaimer-content p {
+            margin-bottom: 15px;
+        }
+        
+        .disclaimer-content strong {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .important-list {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .important-list h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .important-list ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .important-list li {
+            padding: 8px 0;
+            color: #856404;
+        }
+        
+        .important-list li:before {
+            content: "⚠️ ";
+            margin-right: 10px;
+        }
+        
+        .acceptance-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 12px;
+            margin-top: 4px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .checkbox-container label {
+            cursor: pointer;
+            color: #2c3e50;
+            user-select: none;
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+        
+        button {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .accept-btn {
+            background: #10b981;
+            color: white;
+        }
+        
+        .accept-btn:hover:not(:disabled) {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .accept-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+        
+        .decline-btn {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .decline-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="disclaimer-container">
+        <div class="warning-icon">⚕️</div>
+        
+        <h1>Medical Disclaimer & Terms of Use</h1>
+        
+        <div class="disclaimer-content">
+            <p>
+                <strong>IMPORTANT: THIS IS NOT A MEDICAL DIAGNOSTIC TOOL</strong>
+            </p>
+            
+            <p>
+                The Voice Health Detection system is a <strong>research and educational platform</strong> designed to demonstrate the potential of machine learning in analyzing voice patterns. It is <strong>NOT intended for</strong>:
+            </p>
+            
+            <ul style="margin-left: 30px; margin-bottom: 20px;">
+                <li>Medical diagnosis of any disease or condition</li>
+                <li>Treatment recommendations</li>
+                <li>Replacement of professional medical advice</li>
+                <li>Clinical decision-making</li>
+                <li>Healthcare screening or assessment</li>
+            </ul>
+            
+            <div class="important-list">
+               <h3>Critical Information You Must Understand:</h3>
+                <ul>
+                    <li>This system is <strong>NOT FDA approved</strong> or medically validated</li>
+                    <li>Predictions are based on limited training data and may be inaccurate</li>
+                    <li>Results should <strong>NOT influence medical decisions</strong></li>
+                    <li>This is <strong>NOT HIPAA compliant</strong> - do not use with actual patient data</li>
+                    <li>The system is for demonstration and learning purposes only</li>
+                </ul>
+            </div>
+            
+            <p>
+                <strong>Always Consult Healthcare Professionals:</strong> If you have health concerns, please consult with qualified medical professionals. Only licensed healthcare providers can diagnose and treat medical conditions.
+            </p>
+            
+            <p>
+                <strong>No Liability:</strong> The creators and operators of this system assume no liability for any decisions made based on the information provided by this application.
+            </p>
+        </div>
+        
+        <div class="acceptance-section">
+            <div class="checkbox-container">
+                <input type="checkbox" id="understand" />
+                <label for="understand">
+                    I understand that this is NOT a medical diagnostic tool and should not be used for medical decision-making
+                </label>
+            </div>
+            
+            <div class="checkbox-container">
+                <input type="checkbox" id="agree" />
+                <label for="agree">
+                    I agree to use this system for research and educational purposes only
+                </label>
+            </div>
+            
+            <div class="checkbox-container">
+                <input type="checkbox" id="consult" />
+                <label for="consult">
+                    I will consult qualified healthcare professionals for any medical concerns
+                </label>
+            </div>
+            
+            <div class="button-container">
+                <button class="decline-btn" onclick="handleDecline()">I Do Not Agree</button>
+                <button class="accept-btn" id="acceptBtn" disabled onclick="handleAccept()">I Agree & Continue</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const acceptBtn = document.getElementById('acceptBtn');
+        
+        // Enable accept button only when all checkboxes are checked
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+                acceptBtn.disabled = !allChecked;
+            });
+        });
+        
+        function handleAccept() {
+            // Mark disclaimer as accepted in localStorage
+            localStorage.setItem('disclaimerAccepted', 'true');
+            localStorage.setItem('disclaimerAcceptedDate', new Date().toISOString());
+            
+            // Redirect to dashboard/home
+            window.location.href = '/dashboard';
+        }
+        
+        function handleDecline() {
+            alert('To use this system, you must accept the terms and conditions.');
+            // Optionally redirect to information page
+            window.location.href = 'https://www.webmd.com/parkinsons-disease/default.htm';
+        }
+    </script>
+</body>
+</html>
