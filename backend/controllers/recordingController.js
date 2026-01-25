@@ -44,8 +44,8 @@ export const uploadRecording = async (req, res) => {
 
     await recording.save();
 
-    // Queue for ML processing (async - don't wait)
-    // TODO: Implement background job queue
+    // Note: ML processing is triggered explicitly via /api/v1/predictions/analyze
+    // This allows users to confirm upload before starting analysis
 
     res.status(201).json({
       success: true,
