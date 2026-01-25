@@ -26,7 +26,7 @@ warnings.filterwarnings('ignore')
 
 # Paths
 MODEL_DIR = './ml-service/models'
-DATASET_PATH = './ml-service/data/parkinsons.data'
+DATASET_PATH = './dataset/parkinsons/parkinsons.data'
 
 # Create models directory
 os.makedirs(MODEL_DIR, exist_ok=True)
