@@ -1,6 +1,8 @@
 import Prediction from '../models/Prediction.js';
 import Recording from '../models/Recording.js';
 import mongoose from 'mongoose';
+import { analyzeAudio } from '../utils/mlClient.js';
+import logger from '../utils/logger.js';
 
 export const submitForAnalysis = async (req, res) => {
   try {
@@ -19,6 +21,14 @@ export const submitForAnalysis = async (req, res) => {
       });
     }
 
+    // Check if audio file exists
+    if (!recording.audioFile?.fileId) {
+      return res.status(400).json({
+        success: false,
+        message: 'No audio file found for this recording',
+      });
+    }
+
     // Update recording status
     recording.status = 'processing';
     await recording.save();
@@ -33,14 +43,99 @@ export const submitForAnalysis = async (req, res) => {
 
     await prediction.save();
 
-    // TODO: Send to ML service for processing
-
+    // Send immediate response
     res.status(201).json({
       success: true,
       message: 'Recording submitted for analysis',
       data: prediction,
     });
+
+    // ========================================
+    // ML SERVICE INTEGRATION - ASYNC PROCESSING
+    // ========================================
+
+    // Process ML analysis asynchronously
+    (async () => {
+      try {
+        logger.info(`Starting ML analysis for recording ${recordingId}`);
+
+        // Update status to processing
+        prediction.status = 'processing';
+        await prediction.save();
+
+        // Emit WebSocket event if available
+        const io = req.app.get('io');
+        if (io) {
+          io.to(`user:${req.userId}`).emit('prediction:status', {
+            predictionId: prediction._id,
+            status: 'processing',
+            message: 'Analyzing audio...'
+          });
+        }
+
+        // Call ML service
+        const mlResult = await analyzeAudio(recording.audioFile.fileId);
+
+        if (!mlResult.success) {
+          throw new Error(mlResult.error || 'ML analysis failed');
+        }
+
+        // Store extracted features in recording
+        recording.features = mlResult.features;
+        recording.status = 'completed';
+        await recording.save();
+
+        // Update prediction with ML results
+        const mlPrediction = mlResult.prediction;
+
+        prediction.condition = mlPrediction.condition || 'unknown';
+        prediction.severity = mlPrediction.severity || null;
+        prediction.confidence = mlPrediction.confidence || 0;
+        prediction.probability = mlPrediction.probability || {};
+        prediction.symptoms = mlPrediction.symptoms || [];
+        prediction.recommendations = mlPrediction.recommendations || [];
+        prediction.status = 'completed';
+        prediction.completedAt = new Date();
+
+        await prediction.save();
+
+        logger.info(`ML analysis completed successfully for recording ${recordingId}`);
+
+        // Emit completion event
+        if (io) {
+          io.to(`user:${req.userId}`).emit('prediction:complete', {
+            predictionId: prediction._id,
+            condition: prediction.condition,
+            confidence: prediction.confidence,
+            status: 'completed'
+          });
+        }
+
+      } catch (error) {
+        logger.error(`ML analysis failed for recording ${recordingId}:`, error);
+
+        // Update status to failed
+        prediction.status = 'failed';
+        prediction.error = error.message;
+        await prediction.save();
+
+        recording.status = 'failed';
+        await recording.save();
+
+        // Emit failure event
+        const io = req.app.get('io');
+        if (io) {
+          io.to(`user:${req.userId}`).emit('prediction:failed', {
+            predictionId: prediction._id,
+            error: error.message,
+            status: 'failed'
+          });
+        }
+      }
+    })();
+
   } catch (error) {
+    logger.error('Submit for analysis error:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to submit for analysis',
