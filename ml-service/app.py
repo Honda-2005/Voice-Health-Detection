@@ -170,19 +170,13 @@ def make_prediction(features):
     global model, scaler
     
     try:
+        # CRITICAL: Model must be loaded - no dummy predictions
         if model is None:
-            # Return dummy prediction if model not loaded
-            return {
-                'condition': 'healthy',
-                'severity': 'none',
-                'confidence': 0.7,
-                'probability': {
-                    'healthy': 0.7,
-                    'parkinsons': 0.2,
-                    'other': 0.1,
-                },
-                'explanation': 'Model not loaded - using default prediction',
-            }
+            logger.error('CRITICAL: ML model not loaded - cannot make predictions')
+            raise RuntimeError(
+                'ML model not available. Please ensure the model is trained and loaded. '
+                'Run: python ml-service/train_model.py'
+            )
         
         # Prepare features
         X = prepare_features_for_model(features)
@@ -190,6 +184,8 @@ def make_prediction(features):
         # Scale features if scaler available
         if scaler is not None:
             X = scaler.transform(X)
+        else:
+            logger.warning('Scaler not loaded - predictions may be less accurate')
         
         # Make prediction
         prediction = model.predict(X)[0]
@@ -227,6 +223,9 @@ def make_prediction(features):
         
         return result
     
+    except RuntimeError as e:
+        # Model not loaded - re-raise
+        raise e
     except Exception as e:
         logger.error(f'Error making prediction: {str(e)}')
         logger.error(traceback.format_exc())

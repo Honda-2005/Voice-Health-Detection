@@ -11,6 +11,10 @@ import { initGridFS } from './backend/utils/gridfs.js';
 // Load environment variables
 dotenv.config();
 
+// Validate configuration before starting server
+import { validateConfig } from './backend/utils/configValidator.js';
+validateConfig();
+
 // Import routes
 import authRoutes from './backend/routes/authRoutes.js';
 import userRoutes from './backend/routes/userRoutes.js';
@@ -25,6 +29,9 @@ import pdfRoutes from './backend/routes/pdfRoutes.js';
 import { errorHandler } from './backend/middleware/errorHandler.js';
 import { requestLogger } from './backend/middleware/requestLogger.js';
 import { corsConfig } from './backend/middleware/corsConfig.js';
+import { globalLimiter } from './backend/middleware/rateLimiter.js';
+import { sanitizeInput, xssProtection } from './backend/middleware/securityMiddleware.js';
+import { socketAuthMiddleware } from './backend/middleware/authMiddleware.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -50,6 +57,13 @@ app.use(requestLogger);
 // Body parsing middleware
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// NoSQL injection & XSS protection (MUST be after body parsers)
+app.use(sanitizeInput);
+app.use(xssProtection);
+
+// Global rate limiting (fallback protection)
+app.use(globalLimiter);
 
 // ==================== DATABASE CONNECTION ====================
 
@@ -79,31 +93,48 @@ const connectDB = async () => {
   }
 };
 
-// ==================== WEBSOCKET ====================
+// ==================== WEBSOCKET CONFIGURATION ====================
 
 // Store connected clients
 const connectedClients = new Map();
 
-io.on('connection', (socket) => {
-  console.log(`✓ Client connected: ${socket.id}`);
+// WebSocket authentication middleware
+io.use(socketAuthMiddleware);
 
-  // Store user association
-  socket.on('authenticate', ({ userId }) => {
-    connectedClients.set(userId, socket.id);
-    socket.join(`user:${userId}`);
-    console.log(`✓ User ${userId} authenticated on socket ${socket.id}`);
-  });
+// WebSocket connection handler
+io.on('connection', (socket) => {
+  console.log(`✓ Client connected: ${socket.id} (User: ${socket.userId})`);
+
+  // Store user<->socket mapping
+  if (!connectedClients.has(socket.userId)) {
+    connectedClients.set(socket.userId, []);
+  }
+  connectedClients.get(socket.userId).push(socket.id);
+
+  // Join user-specific room
+  socket.join(`user:${socket.userId}`);
 
   // Handle disconnection
   socket.on('disconnect', () => {
-    // Remove from connected clients
-    for (const [userId, socketId] of connectedClients.entries()) {
-      if (socketId === socket.id) {
+    const userId = socket.userId;
+    const socketIds = connectedClients.get(userId);
+
+    if (socketIds) {
+      const index = socketIds.indexOf(socket.id);
+      if (index > -1) {
+        socketIds.splice(index, 1);
+      }
+      if (socketIds.length === 0) {
         connectedClients.delete(userId);
-        break;
       }
     }
-    console.log(`✗ Client disconnected: ${socket.id}`);
+
+    console.log(`✗ Client disconnected: ${socket.id} (User: ${userId})`);
+  });
+
+  // Test event
+  socket.on('ping', () => {
+    socket.emit('pong', { userId: socket.userId, timestamp: new Date().toISOString() });
   });
 });
 
