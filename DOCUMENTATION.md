@@ -14,17 +14,17 @@ The **Voice Health Detection** system is designed as a **Service-Oriented Archit
 
 ```
 ┌─────────────────────────────────────────┐
-│   Frontend (Vanilla JavaScript SPA)     │
+│   Frontend (Vanilla JavaScript SPA)    │
 │   • 8 HTML pages                        │
-│   • API Client (apiClient.js)           │
-│   • Served from Express (port 5000)     │
+│   • API Client (apiClient.js)          │
+│   • Served from Express (port 5000)    │
 └──────────────┬──────────────────────────┘
                │ HTTP/JSON (JWT Auth)
                ▼
 ┌─────────────────────────────────────────┐
-│   Backend API (Node.js + Express)       │
+│   Backend API (Node.js + Express)      │
 │   • Port: 5000                          │
-│   • 6 Route modules, 32+ endpoints      │
+│   • 6 Route modules, 32+ endpoints     │
 │   • JWT Authentication                  │
 │   • Mongoose (MongoDB ODM)              │
 └──────┬──────────────────┬───────────────┘

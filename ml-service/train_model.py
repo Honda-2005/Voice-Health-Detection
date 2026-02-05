@@ -249,7 +249,7 @@ def train_binary_classifier(X, y):
 # STEP 4: TEST INFERENCE
 # ============================================================================
 
-def test_inference(model, scaler, X_test):
+def run_inference(model, scaler, X_test):
     """
     Test model inference with real samples
     """
@@ -306,7 +306,7 @@ def main():
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42, stratify=y
     )
-    test_inference(model, scaler, X_test)
+    run_inference(model, scaler, X_test)
     
     # Final summary
     print("\n" + "="*70)
