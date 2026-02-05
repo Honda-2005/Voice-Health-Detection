@@ -1,0 +1,37 @@
+@startuml erd
+entity "User" {
+  * _id : ObjectId
+  --
+  email : String
+  passwordHash : String
+  fullName : String
+  role : Enum [User, Admin]
+  isVerified : Boolean
+  createdAt : Date
+}
+
+entity "Recording" {
+  * _id : ObjectId
+  --
+  * userId : ObjectId <<FK>>
+  filename : String
+  durationSeconds : Integer
+  gridfsId : ObjectId
+  createdAt : Date
+}
+
+entity "Prediction" {
+  * _id : ObjectId
+  --
+  * userId : ObjectId <<FK>>
+  * recordingId : ObjectId <<FK>>
+  condition : String
+  confidence : Float
+  features : JSON
+  createdAt : Date
+}
+
+User ||..|{ Recording : "has many"
+User ||..|{ Prediction : "has many"
+Recording ||..|| Prediction : "generates one"
+@enduml

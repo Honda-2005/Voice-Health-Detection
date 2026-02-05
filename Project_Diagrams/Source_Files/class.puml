@@ -1,0 +1,85 @@
+@startuml class_diagram
+
+package "Backend" {
+    class User {
+        +ObjectId _id
+        +String email
+        +String passwordHash
+        +String fullName
+        +Boolean isVerified
+        +create()
+        +auth()
+    }
+
+    class Recording {
+        +ObjectId _id
+        +ObjectId userId
+        +String filename
+        +Date createdAt
+        +Binary audioData
+        +save()
+    }
+
+    class Prediction {
+        +ObjectId _id
+        +ObjectId recordingId
+        +String condition
+        +Float confidence
+        +Object features
+        +create()
+    }
+
+    class AuthController {
+        +register(req, res)
+        +login(req, res)
+        +logout(req, res)
+    }
+
+    class RecordingController {
+        +upload(req, res)
+        +getHistory(req, res)
+    }
+    
+    class MLService {
+        +analyzeAudio(file)
+        +trainModel()
+    }
+}
+
+package "Frontend" {
+    class APIClient {
+        +login(creds)
+        +uploadRecording(blob)
+    }
+
+    class Recorder {
+        +start()
+        +stop()
+        +submit()
+    }
+}
+
+package "ML Microservice" {
+    class FlaskApp {
+        +/predict
+        +/train
+    }
+    
+    class Model {
+        +RandomForestClassifier
+        +predict()
+    }
+}
+
+User "1" -- "*" Recording : creates
+Recording "1" -- "1" Prediction : generates
+AuthController ..> User : manages
+RecordingController ..> Recording : manages
+RecordingController ..> MLService : uses
+MLService ..> FlaskApp : HTTP requests
+FlaskApp ..> Model : uses
+APIClient --> AuthController : calls
+APIClient --> RecordingController : calls
+Recorder --> APIClient : uses
+
+@enduml

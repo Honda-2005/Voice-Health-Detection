@@ -1,0 +1,34 @@
+@startuml architecture
+node "Client Device" {
+    component "Web Browser" {
+        [Frontend App]
+        [Mic API]
+    }
+}
+
+node "Cloud Server" {
+    node "Application Server" {
+        component "Express.js Backend" as BE
+        component "Auth Module"
+        component "Recording Manager"
+    }
+
+    node "ML Microservice" {
+        component "Python Flask API" as ML
+        component "Librosa DSP"
+        component "Scikit-Learn Model"
+    }
+    
+    database "MongoDB Cluster" {
+        [User Data]
+        [GridFS Storage]
+    }
+}
+
+[Frontend App] <--> BE : REST API / WebSocket
+BE <--> [User Data] : Mongoose
+BE <--> [GridFS Storage] : Streams
+BE <--> ML : HTTP (Internal Network)
+ML --> [Librosa DSP]
+[Librosa DSP] --> [Scikit-Learn Model]
+@enduml

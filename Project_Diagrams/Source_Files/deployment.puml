@@ -1,0 +1,23 @@
+@startuml deployment
+node "End User Workstation" {
+    artifact "Web Browser\n(Chrome/Edge)" as Browser
+}
+
+cloud "Hosting Environment (AWS/Azure)" {
+    node "Reverse Proxy (Nginx)" as Proxy
+    
+    node "App Server (EC2/Droplet)" {
+        component "Node.js Container" as Node
+        component "Python ML Container" as Python
+    }
+    
+    node "Database Server" {
+        database "MongoDB Replica Set" as Mongo
+    }
+}
+
+Browser --> Proxy : HTTPS (443)
+Proxy --> Node : HTTP (5000)
+Node --> Python : HTTP (5001)
+Node --> Mongo : TCP (27017)
+@enduml

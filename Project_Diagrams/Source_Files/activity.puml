@@ -1,0 +1,43 @@
+@startuml activity
+start
+:User logs in;
+if (Credentials valid?) then (no)
+  :Show Error;
+  stop
+else (yes)
+  :Dashboard;
+endif
+
+:Navigate to Analysis;
+:Click Record Component;
+:Browser Request Mic Permission;
+if (Granted?) then (no)
+  :Show Permission Error;
+  stop
+else (yes)
+  :Start Recording;
+endif
+
+:User Speaks Reading Prompt;
+:Stop Recording;
+:Review Audio;
+
+if (User approves?) then (no)
+  :Discard & Retry;
+  stop
+else (yes)
+  :Submit to Cloud;
+endif
+
+fork
+  :Backend Saves Audio;
+fork again
+  :ML Service Extracts Features;
+  :Calculate Jitter/Shimmer;
+  :Run Random Forest Model;
+end fork
+
+:Return Prediction;
+:Display "Healthy" or "Parkinsons";
+stop
+@enduml

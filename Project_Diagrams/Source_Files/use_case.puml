@@ -1,0 +1,35 @@
+@startuml use_case
+left to right direction
+actor "User" as u
+actor "Admin" as a
+
+package "Voice Health Detection System" {
+    usecase "Register Account" as UC1
+    usecase "Login" as UC2
+    usecase "Manage Profile" as UC3
+    usecase "Record Voice Sample" as UC4
+    usecase "Submit Recording" as UC5
+    usecase "View Analysis Results" as UC6
+    usecase "Download PDF Report" as UC7
+    
+    usecase "Manage Users" as UC8
+    usecase "Retrain Model" as UC9
+    usecase "View System Stats" as UC10
+}
+
+u --> UC1
+u --> UC2
+u --> UC3
+u --> UC4
+u --> UC5
+u --> UC6
+u --> UC7
+
+a --> UC2
+a --> UC8
+a --> UC9
+a --> UC10
+
+UC5 .> UC4 : <<include>>
+UC6 .> UC5 : <<include>>
+@enduml

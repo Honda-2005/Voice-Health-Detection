@@ -1,0 +1,41 @@
+@startuml dfd
+title DFD Level 0 (Context Diagram)
+rectangle "Voice Health System" as System
+actor User
+actor Admin
+
+User -> System : Audio Input, Credentials
+System -> User : Health Report, Profile Status
+Admin -> System : Maintenance Config
+System -> Admin : System Stats
+
+newpage
+
+title DFD Level 1
+actor User
+
+package "Voice Health System" {
+    usecase "1.0 Auth Process" as P1
+    usecase "2.0 Audio Processing" as P2
+    usecase "3.0 ML Analysis" as P3
+    usecase "4.0 Reporting" as P4
+    
+    database "User DB" as D1
+    database "Rec DB" as D2
+}
+
+User -> P1 : Login/Register
+P1 <-> D1 : Validate/Save
+P1 -> User : Session Token
+
+User -> P2 : Voice Recording
+P2 -> D2 : Save Audio File
+P2 -> P3 : Audio Stream
+
+P3 -> P3 : Extract Features
+P3 -> P3 : Inference
+P3 -> D2 : Save Result
+P3 -> P4 : Prediction Data
+
+P4 -> User : Display Result PDF
+@enduml

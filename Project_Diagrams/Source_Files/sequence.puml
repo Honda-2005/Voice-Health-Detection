@@ -1,0 +1,28 @@
+@startuml sequence
+actor User
+participant "Frontend (UI)" as UI
+participant "API Client" as API
+participant "Backend (Express)" as BE
+participant "Database (MongoDB)" as DB
+participant "ML Service (Python)" as ML
+
+User ->> UI: Clicks Record
+UI ->> UI: Capture Audio (Mic)
+User ->> UI: Clicks Submit
+UI ->> API: uploadRecording(audioBlob)
+API ->> BE: POST /api/recordings/upload
+BE ->> DB: Save Audio (GridFS)
+DB -->> BE: File Saved (ID)
+BE -->> API: Returns Recording ID
+
+API ->> BE: POST /api/predict/analyze
+BE ->> DB: Retrieve Audio File
+DB -->> BE: Audio Stream
+BE ->> ML: POST /ml/predict (Audio)
+Note right of ML: Extract Features\n(Pitch, Jitter, Shimmer)
+ML ->> ML: Random Forest Inference
+ML -->> BE: JSON {condition: "Healthy", confidence: 0.92}
+BE ->> DB: Save Prediction Result
+BE -->> API: Return Result
+API -->> UI: Display Result
+@enduml

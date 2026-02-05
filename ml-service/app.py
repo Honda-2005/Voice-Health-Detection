@@ -55,22 +55,16 @@ def load_models():
 
 def extract_audio_features(audio_data, sr=SAMPLE_RATE):
     """
-    Extract audio features using librosa
-    
-    Features extracted:
-    - MFCC (Mel-frequency cepstral coefficients)
-    - Pitch
-    - Energy
-    - Zero Crossing Rate
-    - Spectral Centroid
-    - Spectral Rolloff
+    Extract audio features aligned with UCI Parkinson's Dataset
+    Note: Standard Librosa cannot calculate exact Jitter/Shimmer (needs point process),
+    so we use approximate spectral proxies and available features.
     """
     try:
         # Convert bytes to numpy array if needed
         if isinstance(audio_data, bytes):
             audio_data = np.frombuffer(audio_data, dtype=np.float32)
         
-        # Ensure audio is float32 with values between -1 and 1
+        # Ensure audio is float32
         if audio_data.dtype != np.float32:
             audio_data = audio_data.astype(np.float32) / 32768.0
         
@@ -79,61 +73,46 @@ def extract_audio_features(audio_data, sr=SAMPLE_RATE):
         
         features = {}
         
-        # MFCC (13 coefficients)
-        mfcc = librosa.feature.mfcc(y=audio_data, sr=sr, n_mfcc=13)
-        features['mfcc'] = np.mean(mfcc, axis=1).tolist()
-        features['mfcc_std'] = np.std(mfcc, axis=1).tolist()
-        
-        # Fundamental frequency (pitch)
-        F0 = librosa.yin(audio_data, fmin=50, fmax=400, sr=sr, trough_threshold=0.1)
-        pitch = np.nanmean(F0)
-        features['pitch'] = float(pitch) if not np.isnan(pitch) else 0.0
-        features['pitch_std'] = float(np.nanstd(F0)) if not np.isnan(np.nanstd(F0)) else 0.0
-        
-        # Energy
-        energy = np.sum(audio_data ** 2)
-        features['energy'] = float(energy)
-        
-        # Root Mean Square Energy
-        rms = librosa.feature.rms(y=audio_data)
-        features['rms'] = float(np.mean(rms))
-        features['rms_std'] = float(np.std(rms))
-        
-        # Zero Crossing Rate
+        # 1. Fundamental Frequency (Pitch) - Proxy for MDVP:Fo(Hz)
+        f0 = librosa.yin(audio_data, fmin=50, fmax=400, sr=sr)
+        f0 = f0[~np.isnan(f0)]
+        if len(f0) > 0:
+            features['pitch_mean'] = float(np.mean(f0))
+            features['pitch_max'] = float(np.max(f0))
+            features['pitch_min'] = float(np.min(f0))
+            features['pitch_std'] = float(np.std(f0))
+        else:
+            features['pitch_mean'] = 0.0
+            features['pitch_max'] = 0.0
+            features['pitch_min'] = 0.0
+            features['pitch_std'] = 0.0
+
+        # 2. Jitter Proxy (Zero Crossing Rate consistency)
+        # Real Jitter is micro-fluctuation in pitch. We don't have that in librosa.
+        # We use ZCR std dev as a rough proxy for noise/instability.
         zcr = librosa.feature.zero_crossing_rate(audio_data)
-        features['zcr'] = float(np.mean(zcr))
-        features['zcr_std'] = float(np.std(zcr))
+        features['jitter_proxy'] = float(np.std(zcr)) 
         
-        # Spectral Centroid
+        # 3. Shimmer Proxy (RMS Energy stability)
+        # Real Shimmer is micro-fluctuation in amplitude.
+        rms = librosa.feature.rms(y=audio_data)
+        features['shimmer_proxy'] = float(np.std(rms)) / (float(np.mean(rms)) + 1e-8)
+
+        # 4. HNR Proxy (Harmonics to Noise Ratio) using spectral flatness
+        # Low flatness = high tonality (high HNR). High flatness = noise.
+        flatness = librosa.feature.spectral_flatness(y=audio_data)
+        features['hnr_proxy'] = 1.0 - float(np.mean(flatness))
+
+        # 5. Other Spectral Features (RPDE/DFA proxies)
         spec_centroid = librosa.feature.spectral_centroid(y=audio_data, sr=sr)
         features['spectral_centroid'] = float(np.mean(spec_centroid))
-        features['spectral_centroid_std'] = float(np.std(spec_centroid))
         
-        # Spectral Rolloff
         spec_rolloff = librosa.feature.spectral_rolloff(y=audio_data, sr=sr)
         features['spectral_rolloff'] = float(np.mean(spec_rolloff))
-        features['spectral_rolloff_std'] = float(np.std(spec_rolloff))
         
-        # Tempogram (rhythm-related features)
-        onset_strength = librosa.onset.onset_strength(y=audio_data, sr=sr)
-        tempogram = librosa.feature.tempogram(onset_envelope=onset_strength, sr=sr)
-        features['tempogram_mean'] = float(np.mean(tempogram))
-        features['tempogram_std'] = float(np.std(tempogram))
-        
-        # Chroma features
-        chroma = librosa.feature.chroma_cqt(y=audio_data, sr=sr)
-        features['chroma_mean'] = np.mean(chroma, axis=1).tolist()
-        features['chroma_std'] = np.std(chroma, axis=1).tolist()
-        
-        # Mel Spectrogram statistics
-        mel_spec = librosa.feature.melspectrogram(y=audio_data, sr=sr, n_mels=128)
-        features['mel_spec_mean'] = float(np.mean(mel_spec))
-        features['mel_spec_std'] = float(np.std(mel_spec))
-        
-        # Delta (rate of change) features
-        if len(mfcc) > 0:
-            mfcc_delta = librosa.feature.delta(mfcc)
-            features['mfcc_delta_mean'] = np.mean(mfcc_delta, axis=1).tolist()
+        # 6. MFCCs (Standard voice id features)
+        mfcc = librosa.feature.mfcc(y=audio_data, sr=sr, n_mfcc=13)
+        features['mfcc_mean'] = float(np.mean(mfcc))
         
         return features
     
@@ -143,21 +122,22 @@ def extract_audio_features(audio_data, sr=SAMPLE_RATE):
         raise ValueError(f'Feature extraction failed: {str(e)}')
 
 def prepare_features_for_model(features):
-    """Convert extracted features to model input format"""
+    """
+    Convert extracted features to model input format
+    Matches the subset of features trained in train_model.py
+    """
     try:
-        # Create feature vector in consistent order
+        # Feature vector must match the columns selected in train_model.py
+        # Order: [pitch_mean, pitch_max, pitch_min, jitter_proxy, shimmer_proxy, hnr_proxy, spectral_centroid]
         feature_vector = [
-            features.get('pitch', 0),
-            features.get('energy', 0),
-            features.get('zcr', 0),
-            features.get('spectral_centroid', 0),
-            features.get('spectral_rolloff', 0),
-            features.get('rms', 0),
-            np.mean(features.get('mfcc', [0] * 13)),
-            np.std(features.get('mfcc', [0] * 13)),
-            features.get('tempogram_mean', 0),
-            features.get('mel_spec_mean', 0),
-            features.get('mel_spec_std', 0),
+            features.get('pitch_mean', 0),
+            features.get('pitch_max', 0),
+            features.get('pitch_min', 0),
+            features.get('jitter_proxy', 0),
+            features.get('shimmer_proxy', 0),
+            features.get('hnr_proxy', 0),
+            features.get('spectral_centroid', 0)
+            # Note: We omit MFCCs here as UCI dataset doesn't have them
         ]
         
         return np.array(feature_vector).reshape(1, -1)

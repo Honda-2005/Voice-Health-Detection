@@ -61,7 +61,7 @@ async function callMLService(endpoint, data, retries = MAX_RETRIES) {
 /**
  * Analyze audio file and get prediction
  */
-export async function analyzeFeedAudio(audioFilePath, userId) {
+export async function analyzeAudio(audioFilePath, userId) {
     try {
         // Validate file exists
         if (!fs.existsSync(audioFilePath)) {
