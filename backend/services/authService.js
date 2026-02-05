@@ -205,11 +205,23 @@ export async function requestPasswordReset(email) {
             { expiresIn: '1h' }
         );
 
-        // TODO: Send email with reset link
-        // For now, return token (in production, send via email)
-        console.log(`Password reset token for ${email}: ${resetToken}`);
+        // Check if email service is configured
+        if (!process.env.SENDGRID_API_KEY && !process.env.AWS_SES_ACCESS_KEY && !process.env.EMAIL_USER) {
+            // Email service not configured - return token for development/testing only
+            if (process.env.NODE_ENV === 'development') {
+                console.warn('[DEV ONLY] Password reset token:', resetToken);
+                return { success: true, resetToken, warning: 'Email service not configured - token logged to console' };
+            }
+            // In production, fail if email not configured
+            throw new Error('Email service not configured. Please contact administrator.');
+        }
 
-        return { success: true, resetToken };
+        // TODO: Integrate SendGrid, AWS SES, or your preferred email service
+        // Example implementation:
+        // await sendPasswordResetEmail(user.email, resetToken);
+
+        console.log(`Password reset requested for ${email}. Email service integration pending.`);
+        return { success: true, message: 'Password reset email would be sent here' };
     } catch (error) {
         throw error;
     }

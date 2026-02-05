@@ -1,49 +1,44 @@
 import User from '../models/User.js';
-import { generateTokens, generateEmailVerificationToken, generatePasswordResetToken, hashToken } from '../utils/tokenUtils.js';
+import * as authService from '../services/authService.js';
 import { sendVerificationEmail, sendPasswordResetEmail } from '../utils/emailService.js';
 
 export const register = async (req, res) => {
   try {
     const { email, password, fullName, phone } = req.body;
 
-    // Check if user exists
-    const existingUser = await User.findOne({ email: email.toLowerCase() });
-    if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        message: 'Email already registered',
-      });
-    }
-
-    // Generate email verification token
-    const emailVerificationToken = generateEmailVerificationToken();
-    const emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
-
-    // Create new user
-    const user = new User({
-      email: email.toLowerCase(),
+    // Use service layer which has atomic race condition fix
+    const result = await authService.registerUser({
+      email,
       password,
       fullName,
-      phone,
-      emailVerificationToken,
-      emailVerificationExpires,
+      phone
     });
 
-    await user.save();
+    // Fetch created user for complete data
+    const user = await User.findById(result.userId);
 
-    // Send verification email (optional - skip if email not configured)
+    // Generate email verification token if email service configured
     if (process.env.EMAIL_USER) {
+      const emailVerificationToken = crypto.randomBytes(32).toString('hex');
+      user.emailVerificationToken = emailVerificationToken;
+      user.emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      await user.save();
       await sendVerificationEmail(user.email, emailVerificationToken);
     }
 
-    // Generate tokens
-    const { accessToken, refreshToken } = generateTokens(user._id, user.role);
+    // Generate tokens using service
+    const accessToken = authService.generateAccessToken(user);
+    const refreshToken = authService.generateRefreshToken(user);
 
     res.status(201).json({
       success: true,
       message: 'Registration successful. Please verify your email.',
       data: {
-        user: user.toJSON(),
+        user: {
+          id: user._id,
+          email: user.email,
+          fullName: user.fullName
+        },
         tokens: {
           accessToken,
           refreshToken,
@@ -51,6 +46,15 @@ export const register = async (req, res) => {
       },
     });
   } catch (error) {
+    // Handle specific errors from service
+    if (error.message === 'EMAIL_EXISTS') {
+      return res.status(409).json({
+        success: false,
+        message: 'Email already registered',
+      });
+    }
+
+    console.error('Registration error:', error);
     res.status(500).json({
       success: false,
       message: 'Registration failed',
@@ -63,42 +67,44 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user and select password
-    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+    // Use service layer for authentication
+    const result = await authService.loginUser({ email, password });
 
-    if (!user || !(await user.comparePassword(password))) {
+    res.json({
+      success: true,
+      message: 'Login successful',
+      data: {
+        user: result.user,
+        tokens: {
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
+        },
+      },
+    });
+  } catch (error) {
+    // Handle specific errors from service
+    if (error.message === 'INVALID_CREDENTIALS') {
       return res.status(401).json({
         success: false,
         message: 'Invalid email or password',
       });
     }
 
-    if (!user.isActive) {
+    if (error.message === 'ACCOUNT_SUSPENDED') {
       return res.status(403).json({
         success: false,
-        message: 'Account is disabled',
+        message: 'Account is suspended',
       });
     }
 
-    // Update last login
-    user.lastLogin = new Date();
-    await user.save();
+    if (error.message === 'ACCOUNT_DELETED') {
+      return res.status(403).json({
+        success: false,
+        message: 'Account has been deleted',
+      });
+    }
 
-    // Generate tokens
-    const { accessToken, refreshToken } = generateTokens(user._id, user.role);
-
-    res.json({
-      success: true,
-      message: 'Login successful',
-      data: {
-        user: user.toJSON(),
-        tokens: {
-          accessToken,
-          refreshToken,
-        },
-      },
-    });
-  } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({
       success: false,
       message: 'Login failed',
@@ -152,39 +158,35 @@ export const refreshToken = async (req, res) => {
       });
     }
 
-    // Verify refresh token
-    let decoded;
-    try {
-      const jwt = await import('jsonwebtoken');
-      decoded = jwt.verify(refreshToken, process.env.JWT_SECRET_KEY);
-    } catch (error) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid refresh token',
-      });
-    }
-
-    const user = await User.findById(decoded.userId);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found',
-      });
-    }
-
-    const { accessToken, refreshToken: newRefreshToken } = generateTokens(user._id, user.role);
+    // Use service layer for token refresh
+    const result = await authService.refreshAccessToken(refreshToken);
 
     res.json({
       success: true,
       message: 'Token refreshed',
       data: {
         tokens: {
-          accessToken,
-          refreshToken: newRefreshToken,
+          accessToken: result.accessToken,
+          refreshToken: refreshToken, // Return same refresh token
         },
       },
     });
   } catch (error) {
+    if (error.message === 'INVALID_TOKEN_TYPE' || error.name === 'JsonWebTokenError') {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid refresh token',
+      });
+    }
+
+    if (error.message === 'USER_NOT_FOUND') {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    console.error('Token refresh error:', error);
     res.status(500).json({
       success: false,
       message: 'Token refresh failed',
@@ -208,7 +210,7 @@ export const forgotPassword = async (req, res) => {
 
     const resetToken = generatePasswordResetToken();
     const hashedToken = hashToken(resetToken);
-    
+
     user.passwordResetToken = hashedToken;
     user.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
     await user.save();

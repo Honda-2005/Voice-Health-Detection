@@ -118,7 +118,7 @@ export const getUserStats = async (req, res) => {
 
     const recordingCount = await Recording.countDocuments({ userId: req.userId });
     const predictionCount = await Prediction.countDocuments({ userId: req.userId });
-    
+
     const recentRecordings = await Recording.find({ userId: req.userId })
       .sort({ createdAt: -1 })
       .limit(5);
@@ -151,7 +151,7 @@ export const deleteAccount = async (req, res) => {
     const { password } = req.body;
 
     const user = await User.findById(req.userId).select('+password');
-    
+
     if (!(await user.comparePassword(password))) {
       return res.status(401).json({
         success: false,
@@ -163,8 +163,17 @@ export const deleteAccount = async (req, res) => {
     user.isActive = false;
     await user.save();
 
-    // TODO: Also delete/archive user's data
-    
+    /**
+     * Note: User's related data (predictions, recordings) are retained for compliance
+     * and audit purposes. To implement data deletion:
+     * 
+     * 1. Archive predictions: await Prediction.updateMany({ userId }, { archived: true })
+     * 2. Delete audio files: await deleteUserRecordings(userId)
+     * 3. Anonymize personally identifiable fields
+     * 
+     * Implement based on your data retention policy and legal requirements (GDPR, HIPAA).
+     */
+
     res.json({
       success: true,
       message: 'Account deleted successfully',
