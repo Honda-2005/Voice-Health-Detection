@@ -73,42 +73,88 @@ export const submitForAnalysis = async (req, res) => {
           });
         }
 
-        // Call ML service
-        const mlResult = await analyzeAudio(recording.audioFile.fileId);
+        // Get audio file from GridFS
+        // Note: The ML service needs a file path, so we'll need to download from GridFS to temp file
+        const gridfs = req.app.get('gridfs');
+        const gfs = req.app.get('gfs');
 
-        if (!mlResult.success) {
-          throw new Error(mlResult.error || 'ML analysis failed');
+        if (!recording.audioFile?.fileId) {
+          throw new Error('No audio file found in recording');
         }
 
-        // Store extracted features in recording
-        recording.features = mlResult.features;
-        recording.status = 'completed';
-        await recording.save();
+        // Download file from GridFS to temp location
+        const tempFilePath = `./temp/${recording.audioFile.fileId}.${recording.audioFile.contentType.split('/')[1] || 'wav'}`;
+        const fs = await import('fs');
+        const path = await import('path');
 
-        // Update prediction with ML results
-        const mlPrediction = mlResult.prediction;
+        // Ensure temp directory exists
+        const tempDir = path.dirname(tempFilePath);
+        if (!fs.existsSync(tempDir)) {
+          fs.mkdirSync(tempDir, { recursive: true });
+        }
 
-        prediction.condition = mlPrediction.condition || 'unknown';
-        prediction.severity = mlPrediction.severity || null;
-        prediction.confidence = mlPrediction.confidence || 0;
-        prediction.probability = mlPrediction.probability || {};
-        prediction.symptoms = mlPrediction.symptoms || [];
-        prediction.recommendations = mlPrediction.recommendations || [];
-        prediction.status = 'completed';
-        prediction.completedAt = new Date();
+        // Download from GridFS
+        const downloadStream = gfs.openDownloadStream(recording.audioFile.fileId);
+        const writeStream = fs.createWriteStream(tempFilePath);
 
-        await prediction.save();
+        await new Promise((resolve, reject) => {
+          downloadStream.pipe(writeStream);
+          downloadStream.on('error', reject);
+          writeStream.on('finish', resolve);
+          writeStream.on('error', reject);
+        });
 
-        logger.info(`ML analysis completed successfully for recording ${recordingId}`);
+        try {
+          // Call ML service with temp file
+          const mlResult = await analyzeAudio(tempFilePath);
 
-        // Emit completion event
-        if (io) {
-          io.to(`user:${req.userId}`).emit('prediction:complete', {
-            predictionId: prediction._id,
-            condition: prediction.condition,
-            confidence: prediction.confidence,
-            status: 'completed'
-          });
+          // Store extracted features in recording
+          recording.features = mlResult.features;
+          recording.status = 'completed';
+          await recording.save();
+
+          // Normalize condition value for database (lowercase)
+          const normalizedCondition = mlResult.condition.toLowerCase();
+
+          // Update prediction with ML results
+          prediction.condition = normalizedCondition;
+          prediction.severity = mlResult.severity?.toLowerCase() || 'none';
+          prediction.confidence = mlResult.confidence || 0;
+          prediction.probability = {
+            healthy: mlResult.probability?.healthy || 0,
+            parkinsons: mlResult.probability?.parkinson || 0,
+            other: 0
+          };
+          prediction.symptoms = mlResult.symptoms || [];
+          prediction.recommendations = mlResult.recommendations || [];
+          prediction.modelMetadata = {
+            version: '1.0.0',
+            algorithm: 'RandomForest',
+            trainingDate: new Date('2026-02-07'),
+            accuracy: 0.9231
+          };
+          prediction.status = 'completed';
+          prediction.completedAt = new Date();
+
+          await prediction.save();
+
+          logger.info(`ML analysis completed successfully for recording ${recordingId}`);
+
+          // Emit completion event
+          if (io) {
+            io.to(`user:${req.userId}`).emit('prediction:complete', {
+              predictionId: prediction._id,
+              condition: prediction.condition,
+              confidence: prediction.confidence,
+              status: 'completed'
+            });
+          }
+
+        } finally {
+          // Clean up temp file
+          if (fs.existsSync(tempFilePath)) {
+            fs.unlinkSync(tempFilePath);
+          }
         }
 
       } catch (error) {

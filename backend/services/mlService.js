@@ -1,74 +1,120 @@
 /**
- * ML Service Client (MOCKED)
- * Replaces actual ML service with safe, static responses.
+ * ML Service
+ * Business logic for ML operations
  */
 
+import * as mlClient from '../utils/mlClient.js';
+import logger from '../utils/logger.js';
+
 /**
- * Mock analyze audio function
+ * Analyze audio file and get prediction
+ * @param {string} audioFilePath - Path to audio file
+ * @param {string} userId - User ID for logging
  */
 export async function analyzeAudio(audioFilePath, userId) {
-    // Return a safe "Healthy" prediction immediately
-    return {
-        prediction: {
-            condition: "Healthy (Mock)",
-            severity: "None",
-            confidence: 0.99,
-            probability: { "healthy": 0.99, "parkinson": 0.01 },
-            symptoms: [],
-            recommendations: ["System is operating in ML-free mode."]
-        },
-        features: {
-            "mock_feature_1": 0.0,
-            "mock_feature_2": 0.0
-        },
-        confidence: 0.99,
-        condition: "Healthy (Mock)",
-        severity: "None"
-    };
+    try {
+        logger.info(`Analyzing audio for user ${userId}: ${audioFilePath}`);
+
+        // Call ML service
+        const result = await mlClient.analyzeAudio(audioFilePath);
+
+        if (!result.success) {
+            throw new Error(result.error || 'ML analysis failed');
+        }
+
+        // Transform response to match expected format
+        return {
+            condition: result.prediction.condition,
+            severity: result.prediction.severity,
+            confidence: result.prediction.confidence,
+            probability: result.prediction.probability,
+            symptoms: result.prediction.symptoms || [],
+            recommendations: result.prediction.recommendations || [],
+            features: result.features
+        };
+    } catch (error) {
+        logger.error(`ML analysis failed for user ${userId}:`, error);
+        throw error;
+    }
 }
 
 /**
- * Mock feature extraction
+ * Extract features from audio file
+ * @param {string} audioFilePath - Path to audio file
  */
 export async function extractFeatures(audioFilePath) {
-    return {
-        "mock_feature_1": 0.0,
-        "mock_feature_2": 0.0
-    };
+    try {
+        const result = await mlClient.extractFeatures(audioFilePath);
+
+        if (!result.success) {
+            throw new Error(result.error || 'Feature extraction failed');
+        }
+
+        return result.features;
+    } catch (error) {
+        logger.error('Feature extraction failed:', error);
+        throw error;
+    }
 }
 
 /**
- * Mock prediction from features
+ * Get prediction from features
+ * @param {Object} features - Feature dictionary
  */
 export async function predictFromFeatures(features) {
-    return {
-        condition: "Healthy (Mock)",
-        severity: "None",
-        confidence: 0.99,
-        probability: { "healthy": 0.99, "parkinson": 0.01 },
-        symptoms: [],
-        recommendations: ["System is operating in ML-free mode."]
-    };
+    try {
+        const result = await mlClient.getPrediction(features);
+
+        if (!result.success) {
+            throw new Error(result.error || 'Prediction failed');
+        }
+
+        return result.prediction;
+    } catch (error) {
+        logger.error('Prediction failed:', error);
+        throw error;
+    }
 }
 
 /**
- * Mock service health check
+ * Check ML service health
  */
 export async function checkMLServiceHealth() {
-    return {
-        available: true,
-        modelLoaded: true, // Pretend model is loaded
-        version: "0.0.0-mock"
-    };
+    try {
+        const result = await mlClient.checkMLServiceHealth();
+
+        if (!result.success) {
+            return {
+                available: false,
+                modelLoaded: false,
+                version: 'unknown',
+                error: result.error
+            };
+        }
+
+        return {
+            available: true,
+            modelLoaded: result.data.model_loaded,
+            version: result.data.version
+        };
+    } catch (error) {
+        logger.error('ML service health check failed:', error);
+        return {
+            available: false,
+            modelLoaded: false,
+            version: 'unknown',
+            error: error.message
+        };
+    }
 }
 
 /**
- * Mock training (should not be called, but safe mock)
+ * Mock training (not implemented)
  */
 export async function trainModel() {
     return {
-        success: true,
-        message: "Training disabled in ML-free mode"
+        success: false,
+        message: 'Training not available via API'
     };
 }
 
